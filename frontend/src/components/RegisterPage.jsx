@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import {
     Button,
     Flex,
@@ -14,28 +14,32 @@ import {
   import { createUserWithEmailAndPassword } from 'firebase/auth';
   import { auth } from '../lib/firebase';
   import BackButton from './BackButton';
+  import { AuthContext } from './AuthProvider';
   
   export default function RegisterPage() {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const { email, setEmail, userID, setUserID, accessToken, setAccessToken, isLoggedIn, setIsLoggedIn  } = useContext(AuthContext);
+    const [inputEmail, setInputEmail] = useState('');
+    const [inputPassword, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [inputErrorCode, setInputErrorCode] = useState('');
 
     const handleSubmit = () => {
-      if (password !== confirmPassword) {
+      if (inputPassword !== confirmPassword) {
         setInputErrorCode(2);
       }
-      if (!email.includes('@')) {
+      if (!inputEmail.includes('@')) {
         setInputErrorCode(1);
       }
-      createUserWithEmailAndPassword(auth, email, password)
+      createUserWithEmailAndPassword(auth, inputEmail, inputPassword)
         .then((userCredential) => {
-          console.log(userCredential.user)
+          setEmail(userCredential.user.email);
+          setAccessToken(userCredential.user.accessToken);
+          setUserID(userCredential.user.uid);
+          setIsLoggedIn(true);
         })
         .catch((error) => {
           console.log(error.message)
-          if (error.message === "Firebase: Error (auth/email-already-in-use).") {
-            console.log("hey there")
+          if (error.message === "Firebase: Error (auth/inputEmail-already-in-use).") {
             setInputErrorCode(3);
           }
         });
@@ -47,13 +51,13 @@ import {
           <BackButton icon={<ArrowBackIcon />} size="lg"/>
           <Stack spacing={4} w={'full'} maxW={'md'}>
             <Heading fontSize={'2xl'} color="#0d0d0d">Create Account</Heading>
-            <FormControl id="email" isRequired isInvalid={inputErrorCode===1 || inputErrorCode===3}>
+            <FormControl id="inputEmail" isRequired isInvalid={inputErrorCode===1 || inputErrorCode===3}>
               <FormLabel>Email address</FormLabel>
               <Input 
-              type="email"
+              type="inputEmail"
               bg="#fffffe"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={inputEmail}
+              onChange={(e) => setInputEmail(e.target.value)}
               />
               {(inputErrorCode===1) && (
                 <FormErrorMessage>A valid email is required.</FormErrorMessage>
@@ -64,8 +68,8 @@ import {
               }
             </FormControl>
             <FormControl 
-            id="password"
-            value={password} 
+            id="inputPassword"
+            value={inputPassword} 
             onChange={(e) => {setPassword(e.target.value)}}
             isRequired>
               <FormLabel>Password</FormLabel>
