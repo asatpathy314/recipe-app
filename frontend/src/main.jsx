@@ -6,6 +6,7 @@ import App from './App.jsx'
 import Login from './routes/Login.jsx'
 import Discover from './routes/Discover'
 import Register from './routes/Register.jsx'
+import AdminDashboard from './routes/AdminDashboard'
 import AuthProvider from './components/AuthProvider.jsx'
 
 // Routes
@@ -18,6 +19,10 @@ const router = createBrowserRouter([
       {
         path: '/discover',
         element: <Discover />
+      },
+      {
+        path: '/admin',
+        element: <AdminDashboard />
       },
     ]
   },
