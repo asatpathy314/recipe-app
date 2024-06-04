@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { SimpleGrid } from '@chakra-ui/react'
+import { SimpleGrid, Heading } from '@chakra-ui/react'
 import RecipePreview from './RecipePreview'
 
 const AdminPage = () => {
@@ -44,6 +44,7 @@ const AdminPage = () => {
     return (
         <>
            <div className='main-container'>
+                <Heading mb={6}>Approve or deny new recipes</Heading>
                 <SimpleGrid
                     columns={{ base: 1, sm: 2, md: 3, lg: 4 }}
                     spacing={5}>
