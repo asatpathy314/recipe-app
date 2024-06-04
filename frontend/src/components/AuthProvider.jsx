@@ -14,9 +14,9 @@ const { email, setEmail, userID, setUserID, accessToken, setAccessToken, isLogge
 export const AuthContext = createContext(null);
 
 const AuthProvider = ({ children }) => {
-    const [email, setEmail] = useState(() => localStorage.getItem('token') || '');
+    const [email, setEmail] = useState(() => localStorage.getItem('email') || '');
     const [accessToken, setAccessToken] = useState(() => localStorage.getItem('accessToken') || '');
-    const [userID, setUserID] = useState(() => localStorage.getItem('email') || '');
+    const [userID, setUserID] = useState(() => localStorage.getItem('userID') || '');
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     useEffect(() => {
@@ -32,11 +32,11 @@ const AuthProvider = ({ children }) => {
     }, [userID]);
 
     const logout = () => {
+        localStorage.clear();
         setEmail('');
         setUserID('');
         setAccessToken('');
         setIsLoggedIn(false);
-        localStorage.clear();
         window.location.href=('/')
     };
 

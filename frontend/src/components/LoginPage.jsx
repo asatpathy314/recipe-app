@@ -33,6 +33,7 @@ import {
           setEmail(userCredential.user.email);
           setAccessToken(userCredential.user.accessToken);
           setUserID(userCredential.user.uid);
+          console.log(email)
           setIsLoggedIn(true);
           navigate('/')
         })
