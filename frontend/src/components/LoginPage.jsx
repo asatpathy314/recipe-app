@@ -1,6 +1,5 @@
 import {
     Button,
-    Checkbox,
     Flex,
     FormControl,
     FormLabel,
@@ -9,7 +8,6 @@ import {
     Link,
     Stack,
     Image,
-    Text,
   } from '@chakra-ui/react';
   
   export default function LoginPage() {
