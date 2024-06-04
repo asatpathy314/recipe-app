@@ -1,5 +1,6 @@
 import {
     Button,
+    IconButton,
     Flex,
     FormControl,
     FormLabel,
@@ -9,11 +10,14 @@ import {
     Stack,
     Image,
   } from '@chakra-ui/react';
+  import { ArrowBackIcon } from '@chakra-ui/icons'
+  import BackButton from './BackButton';
   
   export default function LoginPage() {
     return (
       <Stack minH={'100vh'} direction={{ base: 'column', md: 'row' }} bg="#eff0f3" color="#2a2a2a">
-        <Flex p={8} flex={1} align={'center'} justify={'center'}>
+        <Flex p={8} flex={1} align={'center'} justify={'center'} position="relative">
+          <BackButton icon={<ArrowBackIcon />} size="lg"/>
           <Stack spacing={4} w={'full'} maxW={'md'}>
             <Heading fontSize={'2xl'} color="#0d0d0d">Sign in to your account</Heading>
             <FormControl id="email">
@@ -41,9 +45,7 @@ import {
           <Image
             alt={'Login Image'}
             objectFit={'cover'}
-            src={
-              '/LoginImage.jpg'
-            }
+            src={'/LoginImage.jpg'}
           />
         </Flex>
       </Stack>
