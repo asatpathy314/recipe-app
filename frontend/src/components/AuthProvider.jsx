@@ -16,7 +16,7 @@ const AuthProvider = ({ children }) => {
     const [email, setEmail] = useState(() => localStorage.getItem('email') || '');
     const [accessToken, setAccessToken] = useState(() => localStorage.getItem('accessToken') || '');
     const [userID, setUserID] = useState(() => localStorage.getItem('userID') || '');
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(() => localStorage.getItem('isLoggedIn') || '');
 
     useEffect(() => {
         localStorage.setItem('email', email);
@@ -29,6 +29,10 @@ const AuthProvider = ({ children }) => {
     useEffect(() => {
         localStorage.setItem('userID', userID);
     }, [userID]);
+
+    useEffect(() => {
+        localStorage.setItem('isLoggedIn', isLoggedIn);
+    }, [isLoggedIn]);
 
     return (
         <AuthContext.Provider value={{ email, setEmail, userID, setUserID, accessToken, setAccessToken, isLoggedIn, setIsLoggedIn }}>
