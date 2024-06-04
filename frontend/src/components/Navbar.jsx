@@ -197,7 +197,7 @@ const NAV_ITEMS = [
 },
 {
     label: 'Discover',
-    href: '#',
+    href: '/discover',
 },
 {
     label: 'My Recipes',

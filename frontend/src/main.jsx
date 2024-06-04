@@ -4,6 +4,7 @@ import * as ReactDOM from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import App from './App.jsx'
 import Login from './routes/Login.jsx'
+import Discover from './routes/Discover'
 import Register from './routes/Register.jsx'
 import AuthProvider from './components/AuthProvider.jsx'
 
@@ -15,8 +16,8 @@ const router = createBrowserRouter([
     element: <App />,
     children: [
       {
-        path: '/',
-        element: <p></p>
+        path: '/discover',
+        element: <Discover />
       },
     ]
   },
