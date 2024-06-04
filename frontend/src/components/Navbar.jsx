@@ -26,7 +26,7 @@ const getNavItems = ( { isAdmin, isLoggedIn }) => {
             [
             {
               label: "Admin Dashboard",
-              href: "#",
+              href: "/admin",
             },
             {
               label: "Discover",
