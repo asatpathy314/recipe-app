@@ -13,9 +13,11 @@ app.use(cookieParser())
 
 //Import Routes
 //const route = require("./api/exampleroute");
+const auth = require("./api/auth")
 
 //initialize Routes
 //app.use("/example", route)
+app.use("/auth", auth)
 
 // Start the server
 const port = process.env.PORT || 8000;

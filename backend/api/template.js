@@ -1,5 +1,5 @@
 const express = require("express");
-const db = require('./firebase');
+const db = require('./firebaseAdminInitializer');
 const router = express.Router();
 
 module.exports = router;
