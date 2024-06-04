@@ -1,206 +1,256 @@
 // Source: https://chakra-templates.dev/navigation/navbar/
 import {
-Box,
-Flex,
-Text,
-IconButton,
-Button,
-Stack,
-Collapse,
-Icon,
-Link,
-Popover,
-PopoverTrigger,
-useColorModeValue,
-useBreakpointValue,
-useDisclosure,
-} from '@chakra-ui/react';
-import {
-HamburgerIcon,
-CloseIcon,
-ChevronDownIcon,
-} from '@chakra-ui/icons';
+  Box,
+  Flex,
+  Text,
+  IconButton,
+  Button,
+  Stack,
+  Collapse,
+  Icon,
+  Link,
+  Popover,
+  PopoverTrigger,
+  useColorModeValue,
+  useBreakpointValue,
+  useDisclosure,
+} from "@chakra-ui/react";
+import { HamburgerIcon, CloseIcon, ChevronDownIcon } from "@chakra-ui/icons";
+import { useContext } from "react";
+import { AuthContext }  from "./AuthProvider";
+
+const getNavItems = ( { isAdmin, isLoggedIn }) => {
+    if (isAdmin) {
+        return (
+            [
+            {
+              label: "Admin Dashboard",
+              href: "#",
+            },
+            {
+              label: "Discover",
+              href: "/discover",
+            },
+            {
+              label: "My Recipes",
+              href: "#",
+            },
+            ]
+        )
+    }
+    else if (isLoggedIn) {
+        return (
+            [
+            {
+            label: "Discover",
+            href: "/discover",
+            },
+            {
+            label: "My Recipes",
+            href: "#",
+            },   
+            ]
+        )
+    } else {
+        return (
+            []
+        )
+    }
+}
+
 
 export default function Navbar() {
-const { isOpen, onToggle } = useDisclosure();
-
-return (
+  const { isOpen, onToggle } = useDisclosure();
+  const { email, isLoggedIn, logout} = useContext(AuthContext);
+  console.log(email)
+  const isAdmin = email === "admin@savorytastes.org";
+  return (
     <Box>
-    <Flex
-        bg={'#fffffe'}
-        color={'#0d0d0d'}
-        minH={'60px'}
+      <Flex
+        bg={"#fffffe"}
+        color={"#0d0d0d"}
+        minH={"60px"}
         py={{ base: 2 }}
         px={{ base: 4 }}
-        align={'center'}>
+        align={"center"}
+      >
         <Flex
-        flex={{ base: 1, md: 'auto' }}
-        ml={{ base: -2 }}
-        display={{ base: 'flex', md: 'none' }}>
-        <IconButton
+          flex={{ base: 1, md: "auto" }}
+          ml={{ base: -2 }}
+          display={{ base: "flex", md: "none" }}
+        >
+          <IconButton
             onClick={onToggle}
             icon={
-            isOpen ? <CloseIcon w={3} h={3} /> : <HamburgerIcon w={5} h={5} />
+              isOpen ? <CloseIcon w={3} h={3} /> : <HamburgerIcon w={5} h={5} />
             }
-            variant={'ghost'}
-            aria-label={'Toggle Navigation'}
-        />
+            variant={"ghost"}
+            aria-label={"Toggle Navigation"}
+          />
         </Flex>
-        <Flex flex={{ base: 1 }} justify={{ base: 'center', md: 'start' }}>
-        <Text
-            textAlign={useBreakpointValue({ base: 'center', md: 'left' })}
-            fontFamily={'heading'}
-            color={useColorModeValue('gray.800', 'white')}>
+        <Flex flex={{ base: 1 }} justify={{ base: "center", md: "start" }}>
+          <Text
+            textAlign={useBreakpointValue({ base: "center", md: "left" })}
+            fontFamily={"heading"}
+            color={useColorModeValue("gray.800", "white")}
+          >
             Savory Stories
-        </Text>
+          </Text>
 
-        <Flex display={{ base: 'none', md: 'flex' }} ml={10}>
-            <DesktopNav />
-        </Flex>
+          <Flex display={{ base: "none", md: "flex" }} ml={10}>
+            <DesktopNav isAdmin={isAdmin} isLoggedIn={isLoggedIn} />
+          </Flex>
         </Flex>
 
         <Stack
-        flex={{ base: 1, md: 0 }}
-        justify={'flex-end'}
-        direction={'row'}
-        spacing={6}>
-        <Button
-            as={'a'}
-            fontSize={'sm'}
+          flex={{ base: 1, md: 0 }}
+          justify={"flex-end"}
+          direction={"row"}
+          spacing={6}
+        >
+        {!isLoggedIn ? (
+          <Button
+            as={"a"}
+            fontSize={"sm"}
             fontWeight={400}
-            variant={'link'}
-            href={'/login'}>
+            variant={"link"}
+            href={"/login"}
+          >
             Sign In
-        </Button>
-        <Button
-            as={'a'}
-            display={{ base: 'none', md: 'inline-flex' }}
-            fontSize={'sm'}
+          </Button>
+        ) : (
+            <Button
+            as={"a"}
+            fontSize={"sm"}
+            fontWeight={400}
+            variant={"link"}
+            onClick={logout}
+            >
+                Sign Out
+            </Button>        
+        )}
+        {!isLoggedIn && (
+          <Button
+            as={"a"}
+            display={{ base: "none", md: "inline-flex" }}
+            fontSize={"sm"}
             fontWeight={600}
-            color={'white'}
-            bg={'#ff8e3c'}
-            href={'/register'}
+            color={"white"}
+            bg={"#ff8e3c"}
+            href={"/register"}
             _hover={{
-            bg: '#ff9d56',
-            }}>
+              bg: "#ff9d56",
+            }}
+          >
             Sign Up
-        </Button>
+          </Button>
+        )}
         </Stack>
-    </Flex>
+      </Flex>
 
-    <Collapse in={isOpen} animateOpacity>
-        <MobileNav />
-    </Collapse>
+      <Collapse in={isOpen} animateOpacity>
+        <MobileNav isAdmin={isAdmin} isLoggedIn={isLoggedIn}/>
+      </Collapse>
     </Box>
-);
+  );
 }
 
-const DesktopNav = () => {
-const linkColor = useColorModeValue('gray.600', 'gray.200');
-const linkHoverColor = useColorModeValue('gray.800', 'white');
+const DesktopNav = ( {isAdmin, isLoggedIn} ) => {
+  const linkColor = useColorModeValue("gray.600", "gray.200");
+  const linkHoverColor = useColorModeValue("gray.800", "white");
+  const NAV_ITEMS = getNavItems({isAdmin, isLoggedIn});
 
-return (
-    <Stack direction={'row'} spacing={4}>
-    {NAV_ITEMS.map((navItem) => (
+  return (
+    <Stack direction={"row"} spacing={4}>
+      {NAV_ITEMS.map((navItem) => (
         <Box key={navItem.label}>
-        <Popover trigger={'hover'} placement={'bottom-start'}>
+          <Popover trigger={"hover"} placement={"bottom-start"}>
             <PopoverTrigger>
-            <Link
+              <Link
                 p={2}
-                href={navItem.href ?? '#'}
-                fontSize={'sm'}
+                href={navItem.href ?? "#"}
+                fontSize={"sm"}
                 fontWeight={500}
                 color={linkColor}
                 _hover={{
-                textDecoration: 'none',
-                color: linkHoverColor,
-                }}>
+                  textDecoration: "none",
+                  color: linkHoverColor,
+                }}
+              >
                 {navItem.label}
-            </Link>
+              </Link>
             </PopoverTrigger>
-        </Popover>
+          </Popover>
         </Box>
-    ))}
+      ))}
     </Stack>
-);
+  );
 };
 
-
-const MobileNav = () => {
-return (
+const MobileNav = ( {isAdmin, isLoggedIn} ) => {
+    const NAV_ITEMS = getNavItems({isAdmin, isLoggedIn});
+  return (
     <Stack
-    bg={useColorModeValue('white', 'gray.800')}
-    p={4}
-    display={{ md: 'none' }}>
-    {NAV_ITEMS.map((navItem) => (
+      bg={useColorModeValue("white", "gray.800")}
+      p={4}
+      display={{ md: "none" }}
+    >
+      {NAV_ITEMS.map((navItem) => (
         <MobileNavItem key={navItem.label} {...navItem} />
-    ))}
+      ))}
     </Stack>
-);
+  );
 };
 
 const MobileNavItem = ({ label, children, href }) => {
-const { isOpen, onToggle } = useDisclosure();
+  const { isOpen, onToggle } = useDisclosure();
 
-return (
+  return (
     <Stack spacing={4} onClick={children && onToggle}>
-    <Flex
+      <Flex
         py={2}
         as={Link}
-        href={href ?? '#'}
-        justify={'space-between'}
-        align={'center'}
+        href={href ?? "#"}
+        justify={"space-between"}
+        align={"center"}
         _hover={{
-        textDecoration: 'none',
-        }}>
+          textDecoration: "none",
+        }}
+      >
         <Text
-        fontWeight={600}
-        color={useColorModeValue('gray.600', 'gray.200')}>
-        {label}
+          fontWeight={600}
+          color={useColorModeValue("gray.600", "gray.200")}
+        >
+          {label}
         </Text>
         {children && (
-        <Icon
+          <Icon
             as={ChevronDownIcon}
-            transition={'all .25s ease-in-out'}
-            transform={isOpen ? 'rotate(180deg)' : ''}
+            transition={"all .25s ease-in-out"}
+            transform={isOpen ? "rotate(180deg)" : ""}
             w={6}
             h={6}
-        />
+          />
         )}
-    </Flex>
+      </Flex>
 
-    <Collapse in={isOpen} animateOpacity style={{ marginTop: '0!important' }}>
+      <Collapse in={isOpen} animateOpacity style={{ marginTop: "0!important" }}>
         <Stack
-        mt={2}
-        pl={4}
-        borderLeft={1}
-        borderStyle={'solid'}
-        borderColor={useColorModeValue('gray.200', 'gray.700')}
-        align={'start'}>
-        {children &&
+          mt={2}
+          pl={4}
+          borderLeft={1}
+          borderStyle={"solid"}
+          borderColor={useColorModeValue("gray.200", "gray.700")}
+          align={"start"}
+        >
+          {children &&
             children.map((child) => (
-            <Link key={child.label} py={2} href={child.href}>
+              <Link key={child.label} py={2} href={child.href}>
                 {child.label}
-            </Link>
+              </Link>
             ))}
         </Stack>
-    </Collapse>
+      </Collapse>
     </Stack>
-);
+  );
 };
-
-
-const NAV_ITEMS = [
-{
-    label: 'Admin Dashboard',
-    href: '#',
-},
-{
-    label: 'Discover',
-    href: '/discover',
-},
-{
-    label: 'My Recipes',
-    href: '#',
-},
-];
