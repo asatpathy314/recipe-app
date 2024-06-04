@@ -158,8 +158,7 @@ const CreateRecipe = () => {
 
   return (
     <Box p={8} maxWidth="1200px" mx="auto">
-      <Heading mb={6}>Create</Heading>
-      <Heading size="lg" mb={4}>Create a recipe</Heading>
+      <Heading mb={6}>Create A Recipe</Heading>
       <form onSubmit={handleSubmit}>
         <Stack spacing={4}>
           <FormControl id="title">
