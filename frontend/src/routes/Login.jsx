@@ -1,8 +1,8 @@
+import LoginPage from "../components/LoginPage"
+
 const Login = () => {
     return (
-        <h1>
-            Login
-        </h1>
+        <LoginPage />
     )
 }
 
