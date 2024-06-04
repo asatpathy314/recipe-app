@@ -39,10 +39,10 @@ router.get('/', authenticateToken, (req, res) => {
         });
     }
     catch (error) {
-        console.error(error);
+        console.error(error.message);
         res.status(500).json({ message: 'Internal Server Error' });
     }
-    }); // Add a comma here
+    });
 
 router.get('/random', authenticateToken, (req, res) => {
     const edamam_type = 'public'; // public or private recipes
@@ -60,12 +60,12 @@ router.get('/random', authenticateToken, (req, res) => {
                 res.status(200).json(response.data);
             })
             .catch((error) => {
-                console.error(error);
+                console.error(error.message);
                 res.status(500).json({ message: 'Internal Server Error' });
         });
         }
         catch (error) {
-                console.error(error);
+                console.error(error.message);
                 res.status(500).json({ message: 'Internal Server Error' });
         }
 })

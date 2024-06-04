@@ -99,7 +99,7 @@ import {
           <Image
             alt={'Login Image'}
             objectFit={'cover'}
-            src={'/LoginImage.webp'}
+            src={'/RegisterImage3.jpg'}
           />
         </Flex>
       </Stack>
