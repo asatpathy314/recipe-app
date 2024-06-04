@@ -27,14 +27,11 @@ const { isOpen, onToggle } = useDisclosure();
 return (
     <Box>
     <Flex
-        bg={useColorModeValue('white', 'gray.800')}
-        color={useColorModeValue('gray.600', 'white')}
+        bg={'#fffffe'}
+        color={'#0d0d0d'}
         minH={'60px'}
         py={{ base: 2 }}
         px={{ base: 4 }}
-        borderBottom={1}
-        borderStyle={'solid'}
-        borderColor={useColorModeValue('gray.200', 'gray.900')}
         align={'center'}>
         <Flex
         flex={{ base: 1, md: 'auto' }}
@@ -81,10 +78,10 @@ return (
             fontSize={'sm'}
             fontWeight={600}
             color={'white'}
-            bg={'pink.400'}
-            href={'#'}
+            bg={'#ff8e3c'}
+            href={'/register'}
             _hover={{
-            bg: 'pink.300',
+            bg: '#ff9d56',
             }}>
             Sign Up
         </Button>

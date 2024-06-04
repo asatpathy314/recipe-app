@@ -1,12 +1,14 @@
 import * as React from 'react'
 import { ChakraProvider } from '@chakra-ui/react'
 import * as ReactDOM from 'react-dom/client'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import App from './App.jsx'
 import Login from './routes/Login.jsx'
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import Register from './routes/Register.jsx'
 import AuthProvider from './components/AuthProvider.jsx'
 
 // Routes
+// If you want to use the Navbar add your component to children, otherwise add it to the end of the list as a new object.
 const router = createBrowserRouter([
   {
     path: '/',
@@ -14,13 +16,17 @@ const router = createBrowserRouter([
     children: [
       {
         path: '/',
-        element: <p>hi hello</p>
+        element: <p></p>
       },
     ]
   },
   {
     path: '/login',
     element: <Login />
+  },
+  {
+    path: '/register',
+    element: <Register />
   }
 ])
 
