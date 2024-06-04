@@ -36,6 +36,10 @@ const getNavItems = ( { isAdmin, isLoggedIn }) => {
               label: "My Recipes",
               href: "#",
             },
+            {
+              label: "Create A Recipe",
+              href: "/create",
+              }, 
             ]
         )
     }
@@ -50,6 +54,10 @@ const getNavItems = ( { isAdmin, isLoggedIn }) => {
             label: "My Recipes",
             href: "#",
             },   
+            {
+              label: "Create A Recipe",
+              href: "create",
+              }, 
             ]
         )
     } else {
