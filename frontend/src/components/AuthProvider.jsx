@@ -1,5 +1,4 @@
 import { createContext, useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 /*
 How to use AuthProvider;
 
@@ -31,17 +30,8 @@ const AuthProvider = ({ children }) => {
         localStorage.setItem('userID', userID);
     }, [userID]);
 
-    const logout = () => {
-        localStorage.clear();
-        setEmail('');
-        setUserID('');
-        setAccessToken('');
-        setIsLoggedIn(false);
-        window.location.href=('/')
-    };
-
     return (
-        <AuthContext.Provider value={{ email, setEmail, userID, setUserID, accessToken, setAccessToken, isLoggedIn, setIsLoggedIn, logout }}>
+        <AuthContext.Provider value={{ email, setEmail, userID, setUserID, accessToken, setAccessToken, isLoggedIn, setIsLoggedIn }}>
             {children}
         </AuthContext.Provider>
     );

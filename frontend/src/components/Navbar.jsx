@@ -17,6 +17,7 @@ import {
 } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon, ChevronDownIcon } from "@chakra-ui/icons";
 import { useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { AuthContext }  from "./AuthProvider";
 
 const getNavItems = ( { isAdmin, isLoggedIn }) => {
@@ -60,8 +61,18 @@ const getNavItems = ( { isAdmin, isLoggedIn }) => {
 
 
 export default function Navbar() {
+    const navigate = useNavigate();
   const { isOpen, onToggle } = useDisclosure();
-  const { email, isLoggedIn, logout} = useContext(AuthContext);
+  const { email, isLoggedIn, setEmail, setUserID, setAccessToken, setIsLoggedIn} = useContext(AuthContext);
+  const logout = () => {
+        localStorage.clear();
+        setEmail('');
+        setUserID('');
+        setAccessToken('');
+        setIsLoggedIn(false);
+        navigate('/');
+    };
+  
   console.log(email)
   const isAdmin = email === "admin@savorytastes.org";
   return (
@@ -120,10 +131,8 @@ export default function Navbar() {
           </Button>
         ) : (
             <Button
-            as={"a"}
             fontSize={"sm"}
             fontWeight={400}
-            variant={"link"}
             onClick={logout}
             >
                 Sign Out
