@@ -84,7 +84,7 @@ export default function Navbar() {
   return (
     <Box>
       <Flex
-        bg={"#fffffe"}
+        bg={"#eff0f3"}
         color={"#0d0d0d"}
         minH={"60px"}
         py={{ base: 2 }}
@@ -110,7 +110,6 @@ export default function Navbar() {
           <Text
             textAlign={useBreakpointValue({ base: "center", md: "left" })}
             fontFamily={"heading"}
-            color={useColorModeValue("gray.800", "white")}
           >
             Savory Stories
           </Text>
@@ -173,7 +172,7 @@ export default function Navbar() {
 }
 
 const DesktopNav = ( {isAdmin, isLoggedIn} ) => {
-  const linkColor = useColorModeValue("gray.600", "gray.200");
+  const linkColor = "#2a2a2a";
   const linkHoverColor = useColorModeValue("gray.800", "white");
   const NAV_ITEMS = getNavItems({isAdmin, isLoggedIn});
 

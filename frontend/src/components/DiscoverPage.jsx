@@ -1,4 +1,4 @@
-import { SimpleGrid, Input, Button } from '@chakra-ui/react';
+import { SimpleGrid, Input, Button, Box} from '@chakra-ui/react';
 import RecipePreview from './RecipePreview';
 import TagsSearch from './TagsSearch'
 import '../styles/discover-page.css'
@@ -66,7 +66,7 @@ const DiscoverPage = () => {
         //     </div>
         // </>
         <>
-            <div className='main-container'>
+            <Box p={10}>
                 <div className="load-recipes">
                     <form onSubmit={handleSubmit}>
                         <Input
@@ -105,7 +105,7 @@ const DiscoverPage = () => {
                         })}
                     </SimpleGrid>
                 </div>
-            </div>
+            </Box>
         </>
     )
 }
