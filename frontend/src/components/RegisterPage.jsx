@@ -42,7 +42,7 @@ import {
         })
         .catch((error) => {
           console.log(error.message)
-          if (error.message === "Firebase: Error (auth/inputEmail-already-in-use).") {
+          if (error.message === "Firebase: Error (auth/email-already-in-use).") {
             setInputErrorCode(3);
           }
         });

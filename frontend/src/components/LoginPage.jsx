@@ -1,4 +1,5 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
+import axios from 'axios';
 import {
     Button,
     Flex,
@@ -27,20 +28,20 @@ import {
     const handleSubmit = () => {
       if (!inputEmail.includes('@')) {
         setInputErrorCode(1);
+        return;
       }
       signInWithEmailAndPassword(auth, inputEmail, inputPassword)
         .then((userCredential) => {
           setEmail(userCredential.user.email);
           setAccessToken(userCredential.user.accessToken);
           setUserID(userCredential.user.uid);
-          console.log(email)
           setIsLoggedIn(true);
           navigate('/')
         })
         .catch((error) => {
           console.log(error.message)
-          if (error.message === "Firebase: Error (auth/inputEmail-already-in-use).") {
-            setInputErrorCode(3);
+          if (error.message === "Firebase: Error (auth/invalid-credential).") {
+            setInputErrorCode(2);
           }
         });
     }
@@ -51,7 +52,7 @@ import {
           <BackButton icon={<ArrowBackIcon />} size="lg"/>
           <Stack spacing={4} w={'full'} maxW={'md'}>
             <Heading fontSize={'2xl'} color="#0d0d0d">Sign In</Heading>
-            <FormControl id="inputEmail" isRequired isInvalid={inputErrorCode===1 || inputErrorCode===3}>
+            <FormControl id="inputEmail" isRequired isInvalid={inputErrorCode===1 || inputErrorCode===2}>
               <FormLabel>Email address</FormLabel>
               <Input 
               type="email"
@@ -67,9 +68,13 @@ import {
             id="inputPassword"
             value={inputPassword} 
             onChange={(e) => {setPassword(e.target.value)}}
+            isInvalid={inputErrorCode===2}
             isRequired>
               <FormLabel>Password</FormLabel>
               <Input type="password" bg="#fffffe" />
+              {(inputErrorCode===2) && (
+                <FormErrorMessage>Incorrect Email or Password</FormErrorMessage>
+              )}
             </FormControl>
             <Button bg="#ff8e3c" variant={'solid'} onClick={handleSubmit}>
                 Sign In

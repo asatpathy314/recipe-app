@@ -72,8 +72,6 @@ export default function Navbar() {
         setIsLoggedIn(false);
         navigate('/');
     };
-  
-  console.log(email)
   const isAdmin = email === "admin@savorytastes.org";
   return (
     <Box>
@@ -100,6 +98,7 @@ export default function Navbar() {
           />
         </Flex>
         <Flex flex={{ base: 1 }} justify={{ base: "center", md: "start" }}>
+          <Link href={"/"}>
           <Text
             textAlign={useBreakpointValue({ base: "center", md: "left" })}
             fontFamily={"heading"}
@@ -107,6 +106,7 @@ export default function Navbar() {
           >
             Savory Stories
           </Text>
+          </Link>
 
           <Flex display={{ base: "none", md: "flex" }} ml={10}>
             <DesktopNav isAdmin={isAdmin} isLoggedIn={isLoggedIn} />
