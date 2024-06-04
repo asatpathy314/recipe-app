@@ -10,6 +10,7 @@ import {
     Image,
     FormErrorMessage
   } from '@chakra-ui/react';
+  import { useNavigate } from "react-router-dom";
   import { ArrowBackIcon } from '@chakra-ui/icons'
   import { createUserWithEmailAndPassword } from 'firebase/auth';
   import { auth } from '../lib/firebase';
@@ -17,6 +18,7 @@ import {
   import { AuthContext } from './AuthProvider';
   
   export default function RegisterPage() {
+    const navigate = useNavigate();
     const { email, setEmail, userID, setUserID, accessToken, setAccessToken, isLoggedIn, setIsLoggedIn  } = useContext(AuthContext);
     const [inputEmail, setInputEmail] = useState('');
     const [inputPassword, setPassword] = useState('');
@@ -36,6 +38,7 @@ import {
           setAccessToken(userCredential.user.accessToken);
           setUserID(userCredential.user.uid);
           setIsLoggedIn(true);
+          navigate('/')
         })
         .catch((error) => {
           console.log(error.message)
@@ -54,7 +57,7 @@ import {
             <FormControl id="inputEmail" isRequired isInvalid={inputErrorCode===1 || inputErrorCode===3}>
               <FormLabel>Email address</FormLabel>
               <Input 
-              type="inputEmail"
+              type="email"
               bg="#fffffe"
               value={inputEmail}
               onChange={(e) => setInputEmail(e.target.value)}
