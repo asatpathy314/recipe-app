@@ -11,8 +11,17 @@ import {
   Heading,
   Select,
   IconButton,
+  Image,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
 } from '@chakra-ui/react';
-import { AddIcon, MinusIcon } from '@chakra-ui/icons';
+import { AddIcon, MinusIcon, DeleteIcon } from '@chakra-ui/icons';
 
 const mealTypes = ['breakfast', 'brunch', 'lunch/dinner', 'snack', 'teatime'];
 const dishTypes = [
@@ -69,10 +78,19 @@ const cuisineTypes = [
 const CreateRecipe = () => {
   const [ingredients, setIngredients] = useState(['']);
   const [ingredientHeaders, setIngredientHeaders] = useState(['']);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [preview, setPreview] = useState(null);
+  const [deleteIndex, setDeleteIndex] = useState(null);
+  const [deleteType, setDeleteType] = useState('');
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const handleAddIngredient = () => setIngredients([...ingredients, '']);
-  const handleRemoveIngredient = (index) =>
-    setIngredients(ingredients.filter((_, i) => i !== index));
+  const handleRemoveIngredient = (index) => {
+    setDeleteIndex(index);
+    setDeleteType('ingredient');
+    onOpen();
+  };
   const handleIngredientChange = (index, value) => {
     const newIngredients = [...ingredients];
     newIngredients[index] = value;
@@ -80,19 +98,69 @@ const CreateRecipe = () => {
   };
 
   const handleAddHeader = () => setIngredientHeaders([...ingredientHeaders, '']);
-  const handleRemoveHeader = (index) =>
-    setIngredientHeaders(ingredientHeaders.filter((_, i) => i !== index));
+  const handleRemoveHeader = (index) => {
+    setDeleteIndex(index);
+    setDeleteType('header');
+    onOpen();
+  };
   const handleHeaderChange = (index, value) => {
     const newHeaders = [...ingredientHeaders];
     newHeaders[index] = value;
     setIngredientHeaders(newHeaders);
   };
 
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setSelectedFile(file);
+      setPreview(URL.createObjectURL(file));
+    }
+  };
+
+  const handleRemoveFile = () => {
+    setDeleteType('file');
+    onOpen();
+  };
+
+  const handleDelete = () => {
+    if (deleteType === 'ingredient') {
+      setIngredients(ingredients.filter((_, i) => i !== deleteIndex));
+    } else if (deleteType === 'header') {
+      setIngredientHeaders(ingredientHeaders.filter((_, i) => i !== deleteIndex));
+    } else if (deleteType === 'file') {
+      setSelectedFile(null);
+      setPreview(null);
+    }
+    onClose();
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    if (selectedFile) {
+      const formData = new FormData();
+      formData.append('file', selectedFile);
+
+      try {
+        const response = await fetch('YOUR_UPLOAD_ENDPOINT', {
+          method: 'POST',
+          body: formData,
+        });
+        if (!response.ok) {
+          throw new Error('File upload failed');
+        }
+        const data = await response.json();
+        console.log('File uploaded successfully:', data);
+      } catch (error) {
+        console.error('Error uploading file:', error);
+      }
+    }
+  };
+
   return (
     <Box p={8} maxWidth="1200px" mx="auto">
       <Heading mb={6}>Create</Heading>
       <Heading size="lg" mb={4}>Create a recipe</Heading>
-      <form>
+      <form onSubmit={handleSubmit}>
         <Stack spacing={4}>
           <FormControl id="title">
             <FormLabel>Recipe Title</FormLabel>
@@ -165,7 +233,16 @@ const CreateRecipe = () => {
 
           <FormControl id="photo">
             <FormLabel>Photo (optional)</FormLabel>
-            <Button>Upload Image</Button>
+            {preview ? (
+              <Box>
+                <Image src={preview} alt="Selected File" boxSize="200px" objectFit="cover" mb={2} />
+                <Button leftIcon={<DeleteIcon />} colorScheme="red" onClick={handleRemoveFile}>
+                  Remove Photo
+                </Button>
+              </Box>
+            ) : (
+              <Input type="file" onChange={handleFileChange} />
+            )}
           </FormControl>
 
           <Button colorScheme="orange" type="submit" mt={4}>
@@ -173,6 +250,25 @@ const CreateRecipe = () => {
           </Button>
         </Stack>
       </form>
+
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Confirm Deletion</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            Are you sure you want to delete this {deleteType === 'file' ? 'photo' : 'item'}?
+          </ModalBody>
+          <ModalFooter>
+            <Button colorScheme="red" onClick={handleDelete} mr={3}>
+              Delete
+            </Button>
+            <Button variant="ghost" onClick={onClose}>
+              Cancel
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </Box>
   );
 };
