@@ -4,7 +4,6 @@ const authenticateToken  = require('../middleware/authenticateToken');
 const axios = require('axios');
 const dotenv = require('dotenv')
 dotenv.config();
-console.log(dotenv.config());
 const baseURL = 'https://api.edamam.com/api/recipes/v2';
 
 const router = express.Router();
