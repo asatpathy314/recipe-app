@@ -41,6 +41,7 @@ const RecipeDetailPage = ({ match }) => {
           }
         });
         setRecipe(response.data);
+        console.log(response.data)
       } catch (error) {
         console.error('Error fetching recipe');
         console.error(error)
@@ -49,7 +50,7 @@ const RecipeDetailPage = ({ match }) => {
     fetchData();
   }, [accessToken, id]);
 
-
+  if (recipe) {
   return (
   <Container maxW={'7xl'} pb={10}>
      { recipe &&
@@ -135,6 +136,7 @@ const RecipeDetailPage = ({ match }) => {
     <Replies />
     </Container>
   );
+  }  
 };
 
 export default RecipeDetailPage;

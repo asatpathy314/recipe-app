@@ -157,7 +157,12 @@ router.get('/:id', authenticateToken, async (req, res) => {
     try {
         const response = await axios.get(`${baseURL}/${recipeId}`, params)
         res.status(200).json(response.data);
-        await db.collection('recipe').doc(recipeId).set(response.data.recipe, {merge: true});
+        const newRecipe = {
+            ...response.data.recipe,
+            isUserGenerated: false,
+            isApproved: true,
+        }
+        await db.collection('recipe').doc(recipeId).set(newRecipe, {merge: true});
     }
     catch (error) {
         console.error(error.message);
