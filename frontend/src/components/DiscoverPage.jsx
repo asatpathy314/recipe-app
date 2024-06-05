@@ -1,9 +1,15 @@
+import { useState } from 'react';
 import { SimpleGrid, Input, Button, Box} from '@chakra-ui/react';
 import RecipePreview from './RecipePreview';
 import TagsSearch from './TagsSearch'
 import '../styles/discover-page.css'
 
 const DiscoverPage = () => {
+    const [user, setUser] = useState('');
+    const [meal, setMeal] = useState('');
+    const [cuisine, setCuisine] = useState('');
+    const [dish, setDish] = useState('');
+
     const dummyData = [
         {
             img:"https://houseofnasheats.com/wp-content/uploads/2022/12/Fried-Okra-Square-1-1.jpg",
@@ -77,10 +83,10 @@ const DiscoverPage = () => {
                         <SimpleGrid 
                         columns={{ sm: 1, md:2, lg:4}}
                         spacing={4}>
-                            <TagsSearch type="user"/>
-                            <TagsSearch type="meal"/>
-                            <TagsSearch type="cuisine"/>
-                            <TagsSearch type="dish"/>
+                            <TagsSearch type="user" inputState={user} changeInputState={setUser}/>
+                            <TagsSearch type="meal" inputState={meal} changeInputState={setMeal}/>
+                            <TagsSearch type="cuisine" inputState={cuisine} changeInputState={setCuisine}/>
+                            <TagsSearch type="dish" inputState={dish} changeInputState={setDish}/>
                         </SimpleGrid>
                         <Button
                             style={{marginTop:"20px"}}
