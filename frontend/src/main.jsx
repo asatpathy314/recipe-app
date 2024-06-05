@@ -26,10 +26,6 @@ const router = createBrowserRouter([
         element: <AdminDashboard />
       },
       {
-        path: '/discover',
-        element: <Discover />
-      },
-      {
         path: '/create',
         element: <Create />
       },
