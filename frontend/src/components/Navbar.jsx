@@ -188,10 +188,6 @@ const DesktopNav = ( {isAdmin, isLoggedIn} ) => {
                 fontSize={"sm"}
                 fontWeight={500}
                 color={linkColor}
-                _hover={{
-                  textDecoration: "none",
-                  color: linkHoverColor,
-                }}
               >
                 {navItem.label}
               </Link>
