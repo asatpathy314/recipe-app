@@ -118,95 +118,97 @@ router.get('/random', authenticateToken, (req, res) => {
     }
 });
 
-router.get('/:id', authenticateToken, async (req, res) => {
-
-
+router.get('/:id', authenticateToken, async (req, res, next) => {
     const recipeId = req.params.id;
-    let fields = [];
-    const options = {
+    const fieldsInitial = ['image', 'images'];
+    const fieldsFinal = [
+        'image', 'images', 'uri', 'source', 'cuisineType', 'mealType', 'dishType', 'label', 'ingredients', 'calories'
+    ];
+
+    const optionsInitial = {
         params: {
-        app_id: process.env.APP_ID,
-        app_key: process.env.APP_KEY,
-        id: recipeId,
-        type: 'public',
-        field: fields,
+            app_id: process.env.APP_ID,
+            app_key: process.env.APP_KEY,
+            id: recipeId,
+            type: 'public',
+            field: fieldsInitial,
         },
         paramsSerializer: {
             indexes: null,
         }
     };
-    fields = [
-        'image',
-        'images',
-    ]
-    const docRef = db.collection('recipe').doc(recipeId);
-    const recipeDoc = await docRef.get();
-    if (recipeDoc.exists) {
-        try {
+
+    const optionsFinal = {
+        params: {
+            app_id: process.env.APP_ID,
+            app_key: process.env.APP_KEY,
+            id: recipeId,
+            type: 'public',
+            field: fieldsFinal,
+        },
+        paramsSerializer: {
+            indexes: null,
+        }
+    };
+
+    try {
+        const docRef = db.collection('recipe').doc(recipeId);
+        const recipeDoc = await docRef.get();
+
+        if (recipeDoc.exists) {
             const recipeData = recipeDoc.data();
             if (!recipeData.isUserGenerated) {
-                const newResponse = await axios.get(`${baseURL}/${recipeId}`, options);
+                const newResponse = await axios.get(`${baseURL}/${recipeId}`, optionsInitial);
                 recipeData.images = newResponse.data.recipe.images;
                 recipeData.image = newResponse.data.recipe.image;
             }
+
             // Get all comments for the recipe
             const commentsSnapshot = await docRef.collection('comment').get();
-            const comments = [];
-            for (const commentDoc of commentsSnapshot.docs) {
+            const comments = await Promise.all(commentsSnapshot.docs.map(async (commentDoc) => {
                 const commentData = commentDoc.data();
                 commentData.id = commentDoc.id;
+                commentData.createdAt = commentData.createdAt.toDate();
 
                 // Get all comments for each reply
                 const repliesSnapshot = await commentDoc.ref.collection('reply').get();
                 const replies = repliesSnapshot.docs.map(replyDoc => ({
                     id: replyDoc.id,
+                    createdAt: replyDoc.data().createdAt.toDate(),
                     ...replyDoc.data()
                 }));
 
                 commentData.replies = replies;
-                comments.push(commentData);
-            }
+                return commentData;
+            }));
 
-            // Add replies to the recipe data
+            // Add comments to the recipe data
             recipeData.comments = comments;
 
             res.status(200).json(recipeData);
-            console.log(recipeData)
-            return;
-        } catch (error) {
-            console.error(error);
-            res.status(500).json({ message: 'Internal Server Error' });
-            return;
-        }
-    }
+            console.log(recipeData);
+        } else {
+            const response = await axios.get(`${baseURL}/${recipeId}`, optionsFinal);
+            console.log(response.data.recipe);
+            const newRecipe = {
+                ...response.data.recipe,
+                isUserGenerated: false,
+                isApproved: true,
+                comments: [],
+            };
 
-    fields = [
-        'image',
-        'images',
-        'uri',
-        'source', 
-        'cuisineType',
-        'mealType',
-        'dishType',
-        'label',
-        'ingredients',
-        'calories',
-    ];
-    
+            res.status(200).json(newRecipe);
 
-    try {
-        const response = await axios.get(`${baseURL}/${recipeId}`, options)
-        res.status(200).json(response.data.recipe);
-        const newRecipe = {
-            ...response.data.recipe,
-            isUserGenerated: false,
-            isApproved: true,
+            const dbRecipe = {
+                ...response.data.recipe,
+                isUserGenerated: false,
+                isApproved: true,
+            };
+
+            await db.collection('recipe').doc(recipeId).set(dbRecipe, { merge: true });
         }
-        await db.collection('recipe').doc(recipeId).set(newRecipe, {merge: true});
-    }
-    catch (error) {
-        console.error(error.message);
-        res.status(500).json({ message: 'Internal Server Error' });
+    } catch (error) {
+        console.error(error);
     }
 });
 

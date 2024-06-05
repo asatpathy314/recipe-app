@@ -8,12 +8,7 @@ import {
 } from '@chakra-ui/react';
 import ReplyCard from './ReplyCard'; // Adjust the import path as necessary
 
-const Replies = () => {
-    const replies = [
-        { author: 'John Doe', content: 'This is a reply.', date: '2024-06-05' },
-        { author: 'Jane Smith', content: 'Another reply here.', date: '2024-06-04' },
-    ];
-
+const Replies = ( {replies} ) => {
     return (
         <Accordion allowMultiple>
             <AccordionItem>
@@ -29,9 +24,10 @@ const Replies = () => {
                     {replies.map((reply, index) => (
                         <ReplyCard
                             key={index}
-                            author={reply.author}
-                            content={reply.content}
-                            date={reply.date}
+                            author={reply.user}
+                            content={reply.text}
+                            date={reply.createdAt}
+                            ml={index*10}
                         />
                     ))}
                 </AccordionPanel>

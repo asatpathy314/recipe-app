@@ -133,7 +133,7 @@ const RecipeDetailPage = ({ match }) => {
         </Stack>
       </SimpleGrid>
       }
-    <Replies />
+    <Replies replies={recipe.comments}/>
     </Container>
   );
   }  
