@@ -17,6 +17,9 @@ import TagsSearch from './TagsSearch';
 const CreateRecipe = () => {
   const [ingredients, setIngredients] = useState(['']);
   const [ingredientHeaders, setIngredientHeaders] = useState(['']);
+  const [dishType, setDishType] = useState('');
+  const [cuisine, setCuisine] = useState('');
+  const [mealType, setMealType] = useState('');
 
   const handleAddIngredient = () => setIngredients([...ingredients, '']);
   const handleRemoveIngredient = (index) =>
@@ -36,6 +39,11 @@ const CreateRecipe = () => {
     setIngredientHeaders(newHeaders);
   };
 
+  const handleSubmit = () => {
+    console.log('submit');
+    console.log(dishType, cuisine, mealType);
+  }
+
   return (
     <Box p={8} maxWidth="1200px" mx="auto">
       <Heading mb={6}>Create</Heading>
@@ -50,9 +58,9 @@ const CreateRecipe = () => {
           <FormControl id="tags">
             <FormLabel>Tags</FormLabel>
             <Flex gap={3}>
-              <TagsSearch type="dish" />
-              <TagsSearch type="cuisine"/>
-              <TagsSearch type="meal" />
+              <TagsSearch type="dish" inputState={dishType} changeInputState={setDishType} />
+              <TagsSearch type="cuisine" inputState={cuisine} changeInputState={setCuisine} />
+              <TagsSearch type="meal" inputState={mealType} changeInputState={setMealType} />
             </Flex>
           </FormControl>
 
@@ -104,7 +112,7 @@ const CreateRecipe = () => {
             <Button>Upload Image</Button>
           </FormControl>
 
-          <Button colorScheme="orange" type="submit" mt={4}>
+          <Button colorScheme="orange" type="submit" mt={4} onClick={handleSubmit}>
             Submit
           </Button>
         </Stack>
