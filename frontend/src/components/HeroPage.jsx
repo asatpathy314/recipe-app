@@ -1,27 +1,22 @@
-import {
-  Container,
-  Stack,
-  Flex,
-  Box,
-  Heading,
-  Text,
-  Button,
-  Image,
-  Icon,
-  createIcon,
-  useColorModeValue,
-} from '@chakra-ui/react';
-
-import { useContext } from "react";
-import { useNavigate } from "react-router-dom";
-import { AuthContext }  from "./AuthProvider";
+import React, { useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { AuthContext } from './AuthProvider';
+import { Flex, Stack, Heading, Text, Button, Box, Image, useColorModeValue, createIcon, Icon } from '@chakra-ui/react';
 
 export default function CallToActionWithVideo() {
-  const handleDiscoverClick = () => {
-    useNavigate('/discover');
+  const { isLoggedIn } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const handleButtonClick = () => {
+    if (isLoggedIn) {
+      navigate("/discover");
+    } else {
+      navigate("/register");
+    }
   };
+
   return (
-    <Container maxW={'7xl'}>
+    <Flex maxW={'6xl'} h="90vh" m={'auto'} p={5} direction={{ base: 'column', md: 'row' }}>
       <Stack
         align={'center'}
         spacing={{ base: 8, md: 10 }}
@@ -54,7 +49,7 @@ export default function CallToActionWithVideo() {
           </Heading>
           <Text color={'gray.500'}>
             Where every recipe is a journey and every meal is a celebration! Dive into a world of flavors 
-            with our meticulously crafted recipes and expert cokking tips, designed empower everyone with the knowledge to cook. 
+            with our meticulously crafted recipes and expert cooking tips, designed to empower everyone with the knowledge to cook. 
             Join us in savoring the process, the meal, and the stories behind every dish!
           </Text>
           <Stack
@@ -68,10 +63,9 @@ export default function CallToActionWithVideo() {
               colorScheme={'red'}
               bg={'orange.400'}
               _hover={{ bg: 'gray.500' }}
-              onClick={handleDiscoverClick}>
-              Discover
+              onClick={handleButtonClick}>
+              {isLoggedIn ? "Discover" : "Sign up"}
             </Button>
-            
           </Stack>
         </Stack>
         <Flex
@@ -81,38 +75,36 @@ export default function CallToActionWithVideo() {
           position={'relative'}
           w={'full'}>
           <Blob
-            w={'150%'}
-            h={'150%'}
+            w={{ base: '100%', md: '150%' }}
+            h={{ base: '100%', md: '150%' }}
             position={'absolute'}
-            top={'-20%'}
+            top={{ base: '0', md: '-20%' }}
             left={0}
             zIndex={-1}
             color={useColorModeValue('orange.50', 'orange.400')}
           />
           <Box
             position={'relative'}
-            height={'450px'}
+            height={{ base: '300px', md: '450px' }}
             rounded={'2xl'}
             boxShadow={'2xl'}
             width={'full'}
             overflow={'hidden'}>
-            
             <Image
               alt={'Hero Image'}
               fit={'cover'}
               align={'center'}
               w={'100%'}
               h={'100%'}
-              src={
-                'https://media.gettyimages.com/id/1289089020/vector/woman-cook-prepares-salad-in-the-kitchen.jpg?s=612x612&w=0&k=20&c=7DypEeTn7NHctp2EQdHNRx7ag3sETUo_wL0P9U-6dpE='
-              }
+              src={'/Hero1.jpg'}
             />
           </Box>
         </Flex>
       </Stack>
-    </Container>
+    </Flex>
   );
 }
+
 
 const PlayIcon = createIcon({
   displayName: 'PlayIcon',
