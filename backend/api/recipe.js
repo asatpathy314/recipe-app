@@ -156,7 +156,7 @@ router.get('/:id', authenticateToken, async (req, res) => {
 
     try {
         const response = await axios.get(`${baseURL}/${recipeId}`, params)
-        res.status(200).json(response.data);
+        res.status(200).json(response.data.recipe);
         const newRecipe = {
             ...response.data.recipe,
             isUserGenerated: false,
