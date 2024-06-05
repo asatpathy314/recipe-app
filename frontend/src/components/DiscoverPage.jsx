@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import { SimpleGrid, Input, Button, Box} from '@chakra-ui/react';
+import { SimpleGrid, Input, Button, Box, Heading } from '@chakra-ui/react';
 import axios from 'axios';
 import RecipePreview from './RecipePreview';
 import TagsSearch from './TagsSearch'
@@ -57,6 +57,7 @@ const DiscoverPage = () => {
         // </>
         <>
             <Box p={10}>
+                <Heading mb={6}>Discover new recipes</Heading>
                 <div className="load-recipes">
                     <form>
                         <Input

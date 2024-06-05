@@ -1,8 +1,7 @@
-import { useEffect } from 'react'
-import { SimpleGrid, Heading } from '@chakra-ui/react'
-import RecipePreview from './RecipePreview'
+import RecipePreview from './RecipePreview';
+import { SimpleGrid, Box, Heading } from '@chakra-ui/react';
 
-const AdminPage = () => {
+const MyRecipesPage = () => {
   const dummyData = [
     {
         img:"https://houseofnasheats.com/wp-content/uploads/2022/12/Fried-Okra-Square-1-1.jpg",
@@ -41,20 +40,22 @@ const AdminPage = () => {
         title: "chili wontons"
     }
 ]
-    return (
-        <>
-           <div className='main-container'>
-                <Heading mb={6}>Approve or deny new recipes</Heading>
-                <SimpleGrid
-                    columns={{ base: 1, sm: 2, md: 3, lg: 4 }}
-                    spacing={5}>
-                    {dummyData.map((recipe, idx)=>{
-                        return <RecipePreview key={idx} data={recipe} forAdmin={true}/>
-                    })}
-                </SimpleGrid>
-            </div>
-        </>
-    )
+  return (
+    <>
+      <Box p={10}>
+          <Heading mb={6}>Revisit your recipes</Heading>
+          <div colSpan={{base:5,md:4}} className="recipes">
+              <SimpleGrid
+                  columns={{ base: 1, sm: 2, md: 3, lg: 4 }}
+                  spacing={5}>
+                  {dummyData.map((recipe, idx)=>{
+                      return <RecipePreview key={idx} data={recipe} forMyRecipes={true}/>
+                  })}
+              </SimpleGrid>
+          </div>
+      </Box>
+    </>
+  )
 }
 
-export default AdminPage
+export default MyRecipesPage

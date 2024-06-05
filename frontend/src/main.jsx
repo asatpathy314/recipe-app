@@ -6,8 +6,10 @@ import App from './App.jsx'
 import Login from './routes/Login.jsx'
 import Discover from './routes/Discover'
 import Register from './routes/Register.jsx'
+import MyRecipes from './routes/MyRecipes.jsx'
 import AdminDashboard from './routes/AdminDashboard'
 import Create from './routes/Create'
+import Hero from './routes/Hero.jsx'
 import AuthProvider from './components/AuthProvider.jsx'
 
 // Routes
@@ -28,6 +30,14 @@ const router = createBrowserRouter([
       {
         path: '/create',
         element: <Create />
+      },
+      {
+        path: '/',
+        element: <Hero />
+      },
+      {
+        path: '/my-recipes',
+        element: <MyRecipes />
       },
     ]
   },
