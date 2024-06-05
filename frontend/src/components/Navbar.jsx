@@ -43,7 +43,7 @@ const getNavItems = ( { isAdmin, isLoggedIn }) => {
             ]
         )
     }
-    else if (isLoggedIn) {
+    else if (isLoggedIn === "true") {
         return (
             [
             {
