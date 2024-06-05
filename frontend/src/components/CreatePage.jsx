@@ -45,7 +45,7 @@ const CreateRecipe = () => {
   }
 
   return (
-    <Box p={8} maxWidth="1200px" mx="auto">
+    <Box p={10}>
       <Heading mb={6}>Create a recipe</Heading>
       <form>
         <Stack spacing={4}>
