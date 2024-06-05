@@ -22,13 +22,23 @@ const Replies = ( {replies} ) => {
                 </h2>
                 <AccordionPanel pb={4}>
                     {replies.map((reply, index) => (
+                        <>
                         <ReplyCard
                             key={index}
                             author={reply.user}
                             content={reply.text}
                             date={reply.createdAt}
-                            ml={index*10}
                         />
+                        {reply.replies.map((reply, index) => (
+                            <ReplyCard 
+                                key={'reply'+index}
+                                author={reply.user}
+                                content={reply.text}
+                                date={reply.createdAt}
+                                ml={20}
+                            />
+                        ))}
+                        </>
                     ))}
                 </AccordionPanel>
             </AccordionItem>

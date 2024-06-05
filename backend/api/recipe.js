@@ -174,8 +174,8 @@ router.get('/:id', authenticateToken, async (req, res, next) => {
                 const repliesSnapshot = await commentDoc.ref.collection('reply').get();
                 const replies = repliesSnapshot.docs.map(replyDoc => ({
                     id: replyDoc.id,
+                    ...replyDoc.data(),
                     createdAt: replyDoc.data().createdAt.toDate(),
-                    ...replyDoc.data()
                 }));
 
                 commentData.replies = replies;
