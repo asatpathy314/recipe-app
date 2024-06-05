@@ -9,62 +9,10 @@ import {
   Textarea,
   Stack,
   Heading,
-  Select,
   IconButton,
 } from '@chakra-ui/react';
 import { AddIcon, MinusIcon } from '@chakra-ui/icons';
-
-const mealTypes = ['breakfast', 'brunch', 'lunch/dinner', 'snack', 'teatime'];
-const dishTypes = [
-  'alcohol cocktail',
-  'biscuits and cookies',
-  'bread',
-  'cereals',
-  'condiments and sauces',
-  'desserts',
-  'drinks',
-  'egg',
-  'ice cream and custard',
-  'main course',
-  'pancake',
-  'pasta',
-  'pastry',
-  'pies and tarts',
-  'pizza',
-  'preps',
-  'preserve',
-  'salad',
-  'sandwiches',
-  'seafood',
-  'side dish',
-  'soup',
-  'special occasions',
-  'starter',
-  'sweets',
-];
-const cuisineTypes = [
-  'american',
-  'asian',
-  'british',
-  'caribbean',
-  'central europe',
-  'chinese',
-  'eastern europe',
-  'french',
-  'greek',
-  'indian',
-  'italian',
-  'japanese',
-  'korean',
-  'kosher',
-  'mediterranean',
-  'mexican',
-  'middle eastern',
-  'nordic',
-  'south american',
-  'south east asian',
-  'world',
-];
+import TagsSearch from './TagsSearch';
 
 const CreateRecipe = () => {
   const [ingredients, setIngredients] = useState(['']);
@@ -101,22 +49,10 @@ const CreateRecipe = () => {
           
           <FormControl id="tags">
             <FormLabel>Tags</FormLabel>
-            <Flex>
-              <Select placeholder="Dish Type" mr={2}>
-                {dishTypes.map((type) => (
-                  <option key={type} value={type}>{type}</option>
-                ))}
-              </Select>
-              <Select placeholder="Cuisine Type" mr={2}>
-                {cuisineTypes.map((type) => (
-                  <option key={type} value={type}>{type}</option>
-                ))}
-              </Select>
-              <Select placeholder="Meal Type">
-                {mealTypes.map((type) => (
-                  <option key={type} value={type}>{type}</option>
-                ))}
-              </Select>
+            <Flex gap={3}>
+              <TagsSearch type="dish" />
+              <TagsSearch type="cuisine"/>
+              <TagsSearch type="meal" />
             </Flex>
           </FormControl>
 
