@@ -12,7 +12,6 @@ const openai = new OpenAI({
 const router = express.Router();
 
 /*
-
 In order to use the API route send 
     1. Authorization: Bearer ${accessToken}
     2. Send a json object formatted as follows:
