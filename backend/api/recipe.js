@@ -103,7 +103,8 @@ router.get('/random', authenticateToken, (req, res) => {
     try {
         axios.get(`${baseURL}`, params)
             .then((response) => {
-                res.status(200).json(response.data);
+                const formattedRecipes = response.data.hits.map((recipe) => recipe.recipe);
+                res.status(200).json(formattedRecipes);
             })
             .catch((error) => {
                 console.error(error.message);
@@ -117,8 +118,15 @@ router.get('/random', authenticateToken, (req, res) => {
     }
 });
 
-router.get('/:id', authenticateToken, (req, res) => {
+router.get('/:id', authenticateToken, async (req, res) => {
     const recipeId = req.params.id;
+    const docRef = db.collection('recipe').doc(recipeId);
+    const doc = await docRef.get();
+    
+    if (doc.exists) {
+        res.status(200).json(doc.data());
+        return;
+    }
 
     const fields = [
         'image',
@@ -147,14 +155,9 @@ router.get('/:id', authenticateToken, (req, res) => {
     };
 
     try {
-        axios.get(`${baseURL}/${recipeId}`, params)
-            .then((response) => {
-                res.status(200).json(response.data);
-            })
-            .catch((error) => {
-                console.error(error.message);
-                res.status(500).json({ message: 'Internal Server Error' });
-        });
+        const response = await axios.get(`${baseURL}/${recipeId}`, params)
+        res.status(200).json(response.data);
+        await db.collection('recipe').doc(recipeId).set(response.data.recipe, {merge: true});
     }
     catch (error) {
         console.error(error.message);

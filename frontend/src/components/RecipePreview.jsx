@@ -35,11 +35,11 @@ const RecipePreview = ({data, forAdmin, forMyRecipes}) => {
       <Card maxW='sm' onClick={handleNavigate} className="preview-card">
         <CardBody className="preview-card-body">
           <Image
-          src={data.recipe.image}
+          src={data.image}
           borderRadius='lg'
           className='preview-img'
           />
-          <Heading size='md' className='preview-text'>{data.recipe.label}</Heading>
+          <Heading size='md' className='preview-text'>{data.label}</Heading>
         </CardBody>
         {forAdmin ? 
           <CardFooter className="preview-footer-admin">

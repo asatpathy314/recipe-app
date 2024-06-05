@@ -40,19 +40,8 @@ const RecipeDetailPage = ({ match }) => {
               Authorization: `Bearer ${accessToken}`
           }
         });
-        setRecipe(response.data.recipe);
-        await axios.post(`http://localhost:8000/recipe`, {
-          data: {
-            ...response.data.recipe,
-            id: id
-          },
-        }, 
-        {          
-          headers: {
-            Authorization: `Bearer ${accessToken}`
-        }})
-      }
-      catch (error) {
+        setRecipe(response.data);
+      } catch (error) {
         console.error('Error fetching recipe');
         console.error(error)
       }

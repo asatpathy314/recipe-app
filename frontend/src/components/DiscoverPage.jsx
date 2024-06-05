@@ -31,7 +31,7 @@ const DiscoverPage = () => {
                             Authorization: `Bearer ${accessToken}`
                         }
                     });
-                    setRecipes(response.data.hits);
+                    setRecipes(response.data);
                 } catch (error) {
                     console.error(error)
                 }
@@ -83,7 +83,7 @@ const DiscoverPage = () => {
                         spacing={5}>
                         {recipes.map((recipe, idx)=>{
                             return (
-                            <Link key={idx} href={`/recipe/${extractID(recipe.recipe.uri)}`}>
+                            <Link key={idx} href={`/recipe/${extractID(recipe.uri)}`}>
                                 <RecipePreview data={recipe} forAdmin={false}/>
                             </Link>
                         )
