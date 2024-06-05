@@ -50,7 +50,7 @@ const RecipeDetailPage = ({ match }) => {
     fetchData();
   }, [accessToken, id]);
 
-  if (recipe) {
+  if (recipe !== null) {
   return (
   <Container maxW={'7xl'} pb={10}>
      { recipe &&
@@ -107,9 +107,9 @@ const RecipeDetailPage = ({ match }) => {
                 mb={'4'}>
                 Tags
               </Text>
-              <Tag size="lg" m={2}>{recipe.dishType[0]}</Tag>
-              <Tag size="lg" m={2}>{recipe.mealType[0]}</Tag>
-              <Tag size="lg" m={2}>{recipe.cuisineType[0]}</Tag>
+              <Tag size="lg" m={2}>{recipe?.dishType[0]}</Tag>
+              <Tag size="lg" m={2}>{recipe?.mealType[0]}</Tag>
+              <Tag size="lg" m={2}>{recipe?.cuisineType[0]}</Tag>
             </Box>
             <Box>
               <Text
