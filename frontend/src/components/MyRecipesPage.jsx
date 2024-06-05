@@ -1,4 +1,5 @@
 import RecipePreview from './RecipePreview';
+import { SimpleGrid, Box, Heading } from '@chakra-ui/react';
 
 const MyRecipesPage = () => {
   const dummyData = [
@@ -40,9 +41,20 @@ const MyRecipesPage = () => {
     }
 ]
   return (
-    dummyData.map((recipe,idx)=>{
-      <RecipePreview key={idx} data={recipe} forMyRecipes={true}/>
-    })
+    <>
+      <Box p={10}>
+          <Heading mb={6}>Revisit your recipes</Heading>
+          <div colSpan={{base:5,md:4}} className="recipes">
+              <SimpleGrid
+                  columns={{ base: 1, sm: 2, md: 3, lg: 4 }}
+                  spacing={5}>
+                  {dummyData.map((recipe, idx)=>{
+                      return <RecipePreview key={idx} data={recipe} forMyRecipes={true}/>
+                  })}
+              </SimpleGrid>
+          </div>
+      </Box>
+    </>
   )
 }
 

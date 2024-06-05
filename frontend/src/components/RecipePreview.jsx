@@ -57,7 +57,7 @@ const RecipePreview = ({data, forAdmin, forMyRecipes}) => {
               />
           </CardFooter> :
           forMyRecipes ? 
-          <></> :
+          <CardFooter/> :
           <CardFooter className="preview-footer">
             {saved ?
               <IconButton 
