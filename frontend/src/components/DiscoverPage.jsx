@@ -1,53 +1,37 @@
-import { useState } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { SimpleGrid, Input, Button, Box} from '@chakra-ui/react';
+import axios from 'axios';
 import RecipePreview from './RecipePreview';
 import TagsSearch from './TagsSearch'
+import { AuthContext } from '../components/AuthProvider';
 import '../styles/discover-page.css'
 
 const DiscoverPage = () => {
+    const { accessToken } = useContext(AuthContext);
     const [user, setUser] = useState('');
+    const [isSearch, setIsSearch] = useState(false);
+    const [recipes, setRecipes] = useState(null); // [recipe1, recipe2, recipe3, ...
     const [meal, setMeal] = useState('');
     const [cuisine, setCuisine] = useState('');
     const [dish, setDish] = useState('');
-
-    const dummyData = [
-        {
-            img:"https://houseofnasheats.com/wp-content/uploads/2022/12/Fried-Okra-Square-1-1.jpg",
-            title: "warm salad with beef with avocado mango salsa",
-        },
-        {
-            img:"https://www.simplyrecipes.com/thmb/EOMPaYatIY67uFqUXTedXJoCFic=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/Simply-Recipes-Maduros-Serp-LEAD-Overhead-Vertical-61b72217c65b46108a09b649b7c28ae0.jpg",
-            title: "fried plantains",
-        },
-        {
-            img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTVsuQKW_MzRBXx2OmaOCC1WUh4iQt217oc9g&s",
-            title: "chili wontons"
-        },
-        {
-            img:"https://houseofnasheats.com/wp-content/uploads/2022/12/Fried-Okra-Square-1-1.jpg",
-            title: "fried okra",
-        },
-        {
-            img:"https://www.simplyrecipes.com/thmb/EOMPaYatIY67uFqUXTedXJoCFic=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/Simply-Recipes-Maduros-Serp-LEAD-Overhead-Vertical-61b72217c65b46108a09b649b7c28ae0.jpg",
-            title: "fried plantains",
-        },
-        {
-            img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTVsuQKW_MzRBXx2OmaOCC1WUh4iQt217oc9g&s",
-            title: "chili wontons"
-        },
-        {
-            img:"https://houseofnasheats.com/wp-content/uploads/2022/12/Fried-Okra-Square-1-1.jpg",
-            title: "fried okra",
-        },
-        {
-            img:"https://www.simplyrecipes.com/thmb/EOMPaYatIY67uFqUXTedXJoCFic=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/Simply-Recipes-Maduros-Serp-LEAD-Overhead-Vertical-61b72217c65b46108a09b649b7c28ae0.jpg",
-            title: "fried plantains",
-        },
-        {
-            img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTVsuQKW_MzRBXx2OmaOCC1WUh4iQt217oc9g&s",
-            title: "chili wontons"
+    useEffect(() => {
+        console.log('we ball')
+        const fetchData = async () => {
+            if (! isSearch ) {
+                try {
+                    const response = await axios.get('http://localhost:8000/recipe/random',{
+                        headers: {
+                            Authorization: `Bearer ${accessToken}`
+                        }
+                    });
+                    setRecipes(response.data.hits);
+                } catch (error) {
+                    console.error(error)
+                }
+            }
         }
-    ]
+        fetchData()
+    }, [isSearch, accessToken])
     const handleSubmit = () => {
 
     }
@@ -74,7 +58,7 @@ const DiscoverPage = () => {
         <>
             <Box p={10}>
                 <div className="load-recipes">
-                    <form onSubmit={handleSubmit}>
+                    <form>
                         <Input
                             placeholder='Search'
                             style={{marginBottom:"15px"}}
@@ -90,7 +74,7 @@ const DiscoverPage = () => {
                         </SimpleGrid>
                         <Button
                             style={{marginTop:"20px"}}
-                            type="submit"
+                            onClick={handleSubmit}
                             fontWeight={500}
                             color={"white"}
                             bg={"#ff8e3c"}
@@ -102,15 +86,17 @@ const DiscoverPage = () => {
                         </Button>
                     </form>
                 </div>
+                {recipes &&
                 <div colSpan={{base:5,md:4}} className="recipes">
                     <SimpleGrid
                         columns={{ base: 1, sm: 2, md: 3, lg: 4 }}
                         spacing={5}>
-                        {dummyData.map((recipe, idx)=>{
+                        {recipes.map((recipe, idx)=>{
                             return <RecipePreview key={idx} data={recipe} forAdmin={false}/>
                         })}
                     </SimpleGrid>
                 </div>
+                }
             </Box>
         </>
     )

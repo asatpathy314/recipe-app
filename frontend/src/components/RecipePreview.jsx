@@ -28,16 +28,18 @@ const RecipePreview = ({data, forAdmin}) => {
   const handleNavigate = () => {
     //navigate("");
   }
+  console.log(data)
   return (
     <>
+      {data &&
       <Card maxW='sm' onClick={handleNavigate} className="preview-card">
         <CardBody className="preview-card-body">
           <Image
-          src={data.img}
+          src={data.recipe.image}
           borderRadius='lg'
           className='preview-img'
           />
-          <Heading size='md' className='preview-text'>{data.title}</Heading>
+          <Heading size='md' className='preview-text'>{data.recipe.label}</Heading>
         </CardBody>
         {forAdmin ? 
           <CardFooter className="preview-footer-admin">
@@ -75,6 +77,7 @@ const RecipePreview = ({data, forAdmin}) => {
             }
         </CardFooter>}
       </Card>
+}
     </>
   )
   
