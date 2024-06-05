@@ -11,7 +11,7 @@ import '../styles/recipe-preview.css'
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom'
 
-const RecipePreview = ({data, forAdmin}) => {
+const RecipePreview = ({data, forAdmin, forMyRecipes}) => {
   const [saved, setSaved] = useState(false);
   const navigate = useNavigate();
   const handleSave = () => {
@@ -55,7 +55,9 @@ const RecipePreview = ({data, forAdmin}) => {
                 fontSize={22}
                 onClick={handleApprove}
               />
-          </CardFooter> : 
+          </CardFooter> :
+          forMyRecipes ? 
+          <CardFooter/> :
           <CardFooter className="preview-footer">
             {saved ?
               <IconButton 

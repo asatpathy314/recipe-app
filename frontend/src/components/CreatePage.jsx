@@ -9,66 +9,17 @@ import {
   Textarea,
   Stack,
   Heading,
-  Select,
   IconButton,
 } from '@chakra-ui/react';
 import { AddIcon, MinusIcon } from '@chakra-ui/icons';
-
-const mealTypes = ['breakfast', 'brunch', 'lunch/dinner', 'snack', 'teatime'];
-const dishTypes = [
-  'alcohol cocktail',
-  'biscuits and cookies',
-  'bread',
-  'cereals',
-  'condiments and sauces',
-  'desserts',
-  'drinks',
-  'egg',
-  'ice cream and custard',
-  'main course',
-  'pancake',
-  'pasta',
-  'pastry',
-  'pies and tarts',
-  'pizza',
-  'preps',
-  'preserve',
-  'salad',
-  'sandwiches',
-  'seafood',
-  'side dish',
-  'soup',
-  'special occasions',
-  'starter',
-  'sweets',
-];
-const cuisineTypes = [
-  'american',
-  'asian',
-  'british',
-  'caribbean',
-  'central europe',
-  'chinese',
-  'eastern europe',
-  'french',
-  'greek',
-  'indian',
-  'italian',
-  'japanese',
-  'korean',
-  'kosher',
-  'mediterranean',
-  'mexican',
-  'middle eastern',
-  'nordic',
-  'south american',
-  'south east asian',
-  'world',
-];
+import TagsSearch from './TagsSearch';
 
 const CreateRecipe = () => {
   const [ingredients, setIngredients] = useState(['']);
   const [ingredientHeaders, setIngredientHeaders] = useState(['']);
+  const [dishType, setDishType] = useState('');
+  const [cuisine, setCuisine] = useState('');
+  const [mealType, setMealType] = useState('');
 
   const handleAddIngredient = () => setIngredients([...ingredients, '']);
   const handleRemoveIngredient = (index) =>
@@ -88,10 +39,14 @@ const CreateRecipe = () => {
     setIngredientHeaders(newHeaders);
   };
 
+  const handleSubmit = () => {
+    console.log('submit');
+    console.log(dishType, cuisine, mealType);
+  }
+
   return (
     <Box p={8} maxWidth="1200px" mx="auto">
-      <Heading mb={6}>Create</Heading>
-      <Heading size="lg" mb={4}>Create a recipe</Heading>
+      <Heading mb={6}>Create a recipe</Heading>
       <form>
         <Stack spacing={4}>
           <FormControl id="title">
@@ -101,22 +56,10 @@ const CreateRecipe = () => {
           
           <FormControl id="tags">
             <FormLabel>Tags</FormLabel>
-            <Flex>
-              <Select placeholder="Dish Type" mr={2}>
-                {dishTypes.map((type) => (
-                  <option key={type} value={type}>{type}</option>
-                ))}
-              </Select>
-              <Select placeholder="Cuisine Type" mr={2}>
-                {cuisineTypes.map((type) => (
-                  <option key={type} value={type}>{type}</option>
-                ))}
-              </Select>
-              <Select placeholder="Meal Type">
-                {mealTypes.map((type) => (
-                  <option key={type} value={type}>{type}</option>
-                ))}
-              </Select>
+            <Flex gap={3}>
+              <TagsSearch type="dish" inputState={dishType} changeInputState={setDishType} />
+              <TagsSearch type="cuisine" inputState={cuisine} changeInputState={setCuisine} />
+              <TagsSearch type="meal" inputState={mealType} changeInputState={setMealType} />
             </Flex>
           </FormControl>
 
@@ -168,7 +111,7 @@ const CreateRecipe = () => {
             <Button>Upload Image</Button>
           </FormControl>
 
-          <Button colorScheme="orange" type="submit" mt={4}>
+          <Button colorScheme="orange" type="submit" mt={4} onClick={handleSubmit}>
             Submit
           </Button>
         </Stack>
