@@ -7,8 +7,16 @@ import {
     Box,
 } from '@chakra-ui/react';
 import ReplyCard from './ReplyCard'; // Adjust the import path as necessary
+import { useState } from 'react';
+import CommentForm from './CommentForm'; // Adjust the import path as necessary
 
-const Replies = ( {replies} ) => {
+const Replies = ({ replies }) => {
+    const [localReplies, setLocalReplies] = useState(replies);
+
+    const addComment = (newComment) => {
+        setLocalReplies([...localReplies, newComment]);
+    };
+
     return (
         <Accordion allowMultiple>
             <AccordionItem>
@@ -21,25 +29,25 @@ const Replies = ( {replies} ) => {
                     </AccordionButton>
                 </h2>
                 <AccordionPanel pb={4}>
-                    {replies.map((reply, index) => (
-                        <>
-                        <ReplyCard
-                            key={index}
-                            author={reply.user}
-                            content={reply.text}
-                            date={reply.createdAt}
-                        />
-                        {reply.replies.map((reply, index) => (
-                            <ReplyCard 
-                                key={'reply'+index}
+                    {localReplies.map((reply, index) => (
+                        <div key={index}>
+                            <ReplyCard
                                 author={reply.user}
                                 content={reply.text}
                                 date={reply.createdAt}
-                                ml={20}
                             />
-                        ))}
-                        </>
+                            {reply.replies.map((subReply, subIndex) => (
+                                <ReplyCard
+                                    key={'reply' + subIndex}
+                                    author={subReply.user}
+                                    content={subReply.text}
+                                    date={subReply.createdAt}
+                                    ml={20}
+                                />
+                            ))}
+                        </div>
                     ))}
+                    <CommentForm addComment={addComment} />
                 </AccordionPanel>
             </AccordionItem>
         </Accordion>

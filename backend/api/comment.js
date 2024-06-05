@@ -27,6 +27,7 @@ router.get('/', authenticateToken, async (req, res) => {
 })
 
 router.post('/', authenticateToken, async (req, res) => {
+    console.log('hehe')
     const id = req.query.id
     const { text, user } = req.body;
     if (!text || !user || !id)  {
