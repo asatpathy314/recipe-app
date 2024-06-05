@@ -37,24 +37,6 @@ const DiscoverPage = () => {
     }
 
     return (
-        // <>
-        //     <div className='main-container'>
-        //         <Grid templateColumns='repeat(5, 1fr)' gap={4}>
-        //             <GridItem className="sidebar">
-        //                 hello
-        //             </GridItem>
-        //             <GridItem colSpan={{base:5,md:4}} className="recipes">
-        //                 <SimpleGrid
-        //                     columns={{ base: 1, sm: 2, md: 3, lg: 4 }}
-        //                     spacing={5}>
-        //                     {dummyData.map((recipe, idx)=>{
-        //                         return <RecipePreview key={idx} data={recipe} forAdmin={false}/>
-        //                     })}
-        //                 </SimpleGrid>
-        //             </GridItem>
-        //         </Grid>
-        //     </div>
-        // </>
         <>
             <Box p={10}>
                 <Heading mb={6}>Discover new recipes</Heading>
