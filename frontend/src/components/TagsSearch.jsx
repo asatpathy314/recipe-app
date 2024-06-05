@@ -16,7 +16,7 @@ function TagsSearch({ type, inputState, changeInputState }) {
   };
 
   return (
-    <AutoComplete openOnFocus onChange={handleSelect}>
+    <AutoComplete openOnFocus listAllValuesOnFocus onChange={handleSelect}>
       <AutoCompleteInput
         variant="filled"
         backgroundColor="transparent"
