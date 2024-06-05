@@ -34,7 +34,7 @@ const getNavItems = ( { isAdmin, isLoggedIn }) => {
             },
             {
               label: "My Recipes",
-              href: "#",
+              href: "/my-recipes",
             },
             {
               label: "Create A Recipe",
