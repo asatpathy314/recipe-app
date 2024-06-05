@@ -14,10 +14,12 @@ app.use(cookieParser());
 // Import Routes
 const recipe = require("./api/recipe");
 const gpt = require("./api/gpt");
+const reply = require("./api/reply");
 
 // Initialize Routes
 app.use("/recipe", recipe);
 app.use("/gpt", gpt);
+app.use("/reply", reply)
 
 // Start the server
 const port = process.env.PORT || 8000;
