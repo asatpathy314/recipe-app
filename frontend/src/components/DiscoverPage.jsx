@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import { SimpleGrid, Input, Button, Box, Heading } from '@chakra-ui/react';
+import { SimpleGrid, Input, Button, Box, Heading, Link } from '@chakra-ui/react';
 import axios from 'axios';
 import RecipePreview from './RecipePreview';
 import TagsSearch from './TagsSearch'
@@ -14,6 +14,13 @@ const DiscoverPage = () => {
     const [meal, setMeal] = useState('');
     const [cuisine, setCuisine] = useState('');
     const [dish, setDish] = useState('');
+    const extractID = (url) => {
+        // Extract the part after the hash (#)
+        const id = url.split('#recipe_')[1];
+        console.log(id); // Output: 9f205a876e184d3abd5965451d94931e
+        return id;
+    }
+
     useEffect(() => {
         console.log('we ball')
         const fetchData = async () => {
@@ -93,7 +100,11 @@ const DiscoverPage = () => {
                         columns={{ base: 1, sm: 2, md: 3, lg: 4 }}
                         spacing={5}>
                         {recipes.map((recipe, idx)=>{
-                            return <RecipePreview key={idx} data={recipe} forAdmin={false}/>
+                            return (
+                            <Link key={idx} href={`/recipe/${extractID(recipe.recipe.uri)}`}>
+                                <RecipePreview data={recipe} forAdmin={false}/>
+                            </Link>
+                        )
                         })}
                     </SimpleGrid>
                 </div>

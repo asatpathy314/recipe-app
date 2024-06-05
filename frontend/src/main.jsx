@@ -41,7 +41,7 @@ const router = createBrowserRouter([
         element: <MyRecipes />
       },
       {
-        path: '/testing',
+        path: '/recipe/:id',
         element: <RecipeDetailPage />
       }
     ]
@@ -59,11 +59,9 @@ const router = createBrowserRouter([
 // Render the app
 const rootElement = document.getElementById('root')
 ReactDOM.createRoot(rootElement).render(
-  <React.StrictMode>
-    <AuthProvider>
-      <ChakraProvider>
-        <RouterProvider router={router}/>
-      </ChakraProvider>
-    </AuthProvider>
-  </React.StrictMode>
+  <AuthProvider>
+    <ChakraProvider>
+      <RouterProvider router={router}/>
+    </ChakraProvider>
+  </AuthProvider>
 )
