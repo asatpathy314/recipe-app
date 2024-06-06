@@ -4,6 +4,7 @@ const { auth }= require('../firebaseAdmin');
 const authenticateToken = async (req, res, next) => {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    console.log('huh')
     return res.status(401).json({ message: 'Unauthorized' });
   }
 

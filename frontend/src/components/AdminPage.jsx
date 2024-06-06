@@ -22,7 +22,7 @@ const AdminPage = () => {
     return (
         <>
            <div className='main-container'>
-                <Heading mb={6}>Approve or deny new recipes</Heading>
+                <Heading mb={6}>Admin Dashboard</Heading>
                 <SimpleGrid
                     columns={{ base: 1, sm: 2, md: 3, lg: 4 }}
                     spacing={5}>

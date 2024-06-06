@@ -15,11 +15,15 @@ app.use(cookieParser());
 const recipe = require("./api/recipe");
 const gpt = require("./api/gpt");
 const comment = require("./api/comment");
+const user = require("./api/user");
+const admin = require("./api/admin");
 
 // Initialize Routes
 app.use("/recipe", recipe);
 app.use("/gpt", gpt);
 app.use("/comment", comment)
+app.use("/user", user);
+app.use("/admin", admin);
 
 // Start the server
 const port = process.env.PORT || 8000;

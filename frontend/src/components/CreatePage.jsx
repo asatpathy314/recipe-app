@@ -25,10 +25,12 @@ import {
 } from '@chakra-ui/react';
 import { AddIcon, MinusIcon } from '@chakra-ui/icons';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; 
 import { AuthContext } from './AuthProvider';
 import TagsSearch from './TagsSearch';
 
 const CreateRecipe = () => {
+  const navigate = useNavigate();
   const { accessToken, email } = useContext(AuthContext);
   const [label, setLabel] = useState('');
   const [calories, setCalories] = useState('');
@@ -70,6 +72,14 @@ const CreateRecipe = () => {
     console.log(ingredients);
     const formattedIngredients = ingredients.map((ingredient, index) => ({ text: ingredient.trim() }));
     console.log(formattedIngredients);
+    if (calories < 0) {
+      setCalories(0);
+    }
+
+    if (calories > 15000) {
+      setCalories(15000);
+    }
+
     if (mealType === 'Lunch' || mealType === 'Dinner') {
       console.log("hehe")
       setMealType('lunch/dinner')
@@ -85,7 +95,7 @@ const CreateRecipe = () => {
       calories,
       isApproved: false,
       isUserGenerated: true,
-      ingredients
+      formattedIngredients
     };
 
     console.log(recipeData)
@@ -95,6 +105,7 @@ const CreateRecipe = () => {
           Authorization: `Bearer ${accessToken}`,
         },
       });
+      navigate(-1);
     } catch (error) {
       console.error('Error creating recipe');
     }
