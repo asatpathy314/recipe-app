@@ -17,6 +17,7 @@ const DiscoverPage = () => {
     const [dish, setDish] = useState('');
    
     const extractID = (url) => {
+
         // Extract the part after the hash (#)
         const id = url.split('#recipe_')[1];
         return id;

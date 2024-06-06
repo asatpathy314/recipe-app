@@ -35,7 +35,7 @@ const RecipeDetailPage = ({ match }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://localhost:8000/recipe/${id}`,{
+        const response = await axios.get(`http://localhost:8000/recipe/getByID/${id}`,{
           headers: {
               Authorization: `Bearer ${accessToken}`
           }
@@ -62,6 +62,7 @@ const RecipeDetailPage = ({ match }) => {
           <Image
             rounded={'md'}
             alt={'recipe image'}
+            fallbackSrc='https://via.placeholder.com/550'
             src={
               recipe.images?.LARGE?.url || recipe.image
             }

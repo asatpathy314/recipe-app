@@ -8,6 +8,9 @@ dotenv.config();
 const baseURL = 'https://api.edamam.com/api/recipes/v2'; // can add /{id} to get a specific recipe by id
 const router = express.Router();
 
+
+
+
 router.get('/', authenticateToken, (req, res) => {
     console.log('3.14159265')
     const query = req.query.q;
@@ -130,7 +133,20 @@ router.get('/random', authenticateToken, (req, res) => {
     }
 });
 
-router.get('/:id', authenticateToken, async (req, res, next) => {
+router.get("/unapproved", authenticateToken, async (req, res) => {
+    const recipes = [];
+    const snapshot = await db.collection('recipe').where('isApproved', '==', false).get();
+    snapshot.forEach((doc) => {
+        recipes.push(
+            {   
+                ...doc.data(),
+                id: doc.id,            
+            });
+    });
+    res.status(200).json(recipes);
+});
+
+router.get('/getByID/:id', authenticateToken, async (req, res, next) => {
     console.log('3.14159265')
     const recipeId = req.params.id;
     const fieldsInitial = ['image', 'images'];
@@ -224,5 +240,6 @@ router.get('/:id', authenticateToken, async (req, res, next) => {
         console.error(error);
     }
 });
+
 
 module.exports = router;

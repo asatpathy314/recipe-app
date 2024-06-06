@@ -20,36 +20,16 @@ const RecipePreview = ({data, forAdmin, forMyRecipes}) => {
   return (
     <>
       {data &&
-      <Card maxW='sm'className="preview-card">
+      <Card maxW='sm'className="preview-card" pb={5}>
         <CardBody className="preview-card-body">
           <Image
           src={data.image}
           borderRadius='lg'
           className='preview-img'
+          fallbackSrc='https://via.placeholder.com/400'
           />
           <Heading size='md' className='preview-text'>{data.label}</Heading>
         </CardBody>
-        {forAdmin ? 
-          <CardFooter className="preview-footer-admin">
-            <IconButton 
-                aria-label='Delete recipe'
-                style={{"backgroundColor":"transparent"}}
-                icon={<FaTimesCircle/>}
-                fontSize={22}
-                onClick={handleDelete}
-              />
-              <IconButton 
-                aria-label='Approve recipe'
-                style={{"backgroundColor":"transparent"}}
-                icon={<FaCheckCircle color="ff8e3c"/>}
-                fontSize={22}
-                onClick={handleApprove}
-              />
-          </CardFooter> :
-          forMyRecipes ? 
-          <CardFooter/> :
-          <CardFooter className="preview-footer">
-        </CardFooter>}
       </Card>
 }
     </>
