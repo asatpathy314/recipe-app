@@ -20,6 +20,7 @@ const AdminPage = () => {
     };
     fetchData();
   }, [accessToken]);
+  
   if (isLoggedIn === "false" || email !== 'admin@savorytastes.org') {
     return (
         <ErrorPage code={403} message="Forbidden" />

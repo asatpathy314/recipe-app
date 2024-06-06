@@ -49,7 +49,7 @@ export default function Navbar() {
     setUserID('');
     setAccessToken('');
     setIsLoggedIn(false);
-    navigate('/');
+    navigate('/', { replace: true });
   };
 
   const [admin, setAdmin] = useState(false);

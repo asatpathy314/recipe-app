@@ -26,7 +26,7 @@ import Replies from "./Replies";
 import ErrorPage from "./ErrorPage";
 
 const RecipeDetailPage = ({ match }) => {
-  const { accessToken, userID, isLoggedIn } = useContext(AuthContext);
+  const { accessToken, userID, isLoggedIn, email } = useContext(AuthContext);
   const { id } = useParams();
   const navigate = useNavigate();
   const [recipe, setRecipe] = useState(null);
@@ -35,6 +35,8 @@ const RecipeDetailPage = ({ match }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
+
+  const [isCreatedByUser, setIsCreatedByUser] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -49,6 +51,7 @@ const RecipeDetailPage = ({ match }) => {
         );
         setRecipe(response.data);
         setIsApproved(response.data.isApproved);
+        setIsCreatedByUser(response.data.source === email.split('@')[0]);
       } catch (error) {
         console.error("Error fetching recipe");
         console.error(error);
@@ -79,7 +82,7 @@ const RecipeDetailPage = ({ match }) => {
     };
 
     loadData();
-  }, [accessToken, id, userID]);
+  }, [accessToken, id, userID, email]);
 
   const handleSave = async () => {
     try {
@@ -127,8 +130,7 @@ const RecipeDetailPage = ({ match }) => {
           },
         }
       );
-      navigate(-1);
-      window.location.reload();
+      navigate("/admin", { replace: true });
     } catch (error) {
       console.error("Error deleting recipe");
       console.error(error);
@@ -145,23 +147,22 @@ const RecipeDetailPage = ({ match }) => {
           },
         }
       );
-      navigate(-1);
-      window.location.reload();
+      navigate("/admin", { replace: true });
     } catch (error) {
       console.error("Error approving recipe");
       console.error(error);
     }
   };
-  console.log(recipe)
-  if (!isLoggedIn) {
-    return <ErrorPage code={403} message="Forbidden" />;
 
+  if (!isLoggedIn || (!isApproved && email !== "admin@savorytastes.org")) {
+    return <ErrorPage code={403} message="Forbidden" />;
   }
 
   if (recipe !== null) {
     return (
       <Container maxW={"7xl"} p={10}>
         <Flex justifyContent="flex-end" mb={4}>
+          <Stack gap={2} direction="row">
           {isApproved && (
             isSaved ? (
               <Button onClick={handleUnsave}>Unsave</Button>
@@ -184,6 +185,14 @@ const RecipeDetailPage = ({ match }) => {
               />
             </>
           }
+          {isCreatedByUser && isApproved && (
+            <IconButton
+              icon={<DeleteIcon />}
+              aria-label="Delete"
+              onClick={handleDelete}
+            />
+          )}
+          </Stack>
         </Flex>
         {recipe && (
           <SimpleGrid
@@ -273,8 +282,7 @@ const RecipeDetailPage = ({ match }) => {
     );
   } else if (isLoading) {
     return <ErrorPage message="Loading..." />;
-  }
-    else {
+  } else {
     return <ErrorPage code={404} message="Recipe not Found" />;
   }
 };
