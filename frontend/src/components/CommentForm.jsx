@@ -6,14 +6,13 @@ import { AuthContext } from './AuthProvider';
 
 const CommentForm = ({ addComment }) => {
     const { id } = useParams();
-    const { accessToken } = useContext(AuthContext);
-    const [user, setUser] = useState('');
+    const { accessToken, email } = useContext(AuthContext);
     const [text, setText] = useState('');
 
     const handleCommentSubmit = async (e) => {
         e.preventDefault();
-        const newComment = { user, text, createdAt: new Date().toISOString(), replies: [] };
-        const dbComment = { user, text, createdAt: new Date().toISOString() };
+        const newComment = { user: email.split('@')[0], text, createdAt: new Date().toISOString(), replies: [] };
+        const dbComment = { user: email.split('@')[0], text, createdAt: new Date().toISOString() };
 
         try {
             const response = await axios.post(`http://localhost:8000/comment?id=${id}`, dbComment, {
@@ -24,7 +23,6 @@ const CommentForm = ({ addComment }) => {
             
             console.log(response.data.message);
             addComment(newComment);
-            setUser('');
             setText('');
         } catch (error) {
             console.error('Error adding comment');
@@ -34,14 +32,6 @@ const CommentForm = ({ addComment }) => {
 
     return (
         <Box as="form" mt={4} onSubmit={handleCommentSubmit}>
-            <FormControl isRequired>
-                <FormLabel>Author</FormLabel>
-                <Input
-                    type="text"
-                    value={user}
-                    onChange={(e) => setUser(e.target.value)}
-                />
-            </FormControl>
             <FormControl isRequired mt={4}>
                 <FormLabel>Comment</FormLabel>
                 <Textarea
