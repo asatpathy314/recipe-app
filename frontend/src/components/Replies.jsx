@@ -8,13 +8,25 @@ import {
 } from '@chakra-ui/react';
 import ReplyCard from './ReplyCard'; // Adjust the import path as necessary
 import { useState } from 'react';
+import { useParams } from 'react-router-dom'; 
 import CommentForm from './CommentForm'; // Adjust the import path as necessary
 
 const Replies = ({ replies }) => {
     const [localReplies, setLocalReplies] = useState(replies);
+    const { id } = useParams();
 
     const addComment = (newComment) => {
         setLocalReplies([...localReplies, newComment]);
+    };
+    
+    const addReply = (commentId, newReply) => {
+        setLocalReplies(prevComments => 
+            prevComments.map(comment => 
+                comment.id === commentId 
+                ? { ...comment, replies: [...comment.replies, newReply] } 
+                : comment
+            )
+        );
     };
 
     return (
@@ -32,17 +44,25 @@ const Replies = ({ replies }) => {
                     {localReplies.map((reply, index) => (
                         <div key={index}>
                             <ReplyCard
+                                isComment={true}
+                                commentId={reply.id}
+                                postId={id}
                                 author={reply.user}
                                 content={reply.text}
                                 date={reply.createdAt}
+                                addReply={(newReply) => addReply(reply.id, newReply)}
                             />
                             {reply.replies.map((subReply, subIndex) => (
                                 <ReplyCard
+                                    isComment={false}
                                     key={'reply' + subIndex}
+                                    commentId={reply.id}
+                                    postId={id}
                                     author={subReply.user}
                                     content={subReply.text}
                                     date={subReply.createdAt}
                                     ml={20}
+                                    addReply={(newReply) => addReply(reply.id, newReply)}
                                 />
                             ))}
                         </div>

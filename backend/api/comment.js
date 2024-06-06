@@ -27,7 +27,6 @@ router.get('/', authenticateToken, async (req, res) => {
 })
 
 router.post('/', authenticateToken, async (req, res) => {
-    console.log('hehe')
     const id = req.query.id
     const { text, user } = req.body;
     if (!text || !user || !id)  {
@@ -51,6 +50,8 @@ router.post('/', authenticateToken, async (req, res) => {
     }
 });
 
+// API Route is http://localhost:8000/comment/reply
+// This route is used to reply to a comment
 router.post('/reply', authenticateToken, async (req, res) => {
     const postid = req.query.postid;
     const commentid = req.query.commentid;

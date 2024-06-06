@@ -1,39 +1,37 @@
 import { useState, useContext } from 'react';
 import { Box, Button, FormControl, FormLabel, Input, Textarea } from '@chakra-ui/react';
-import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { AuthContext } from './AuthProvider';
 
-const CommentForm = ({ addComment }) => {
-    const { id } = useParams();
+const ReplyForm = ({ postId, commentId, addReply }) => {
     const { accessToken } = useContext(AuthContext);
     const [user, setUser] = useState('');
     const [text, setText] = useState('');
 
-    const handleCommentSubmit = async (e) => {
+    const handleReplySubmit = async (e) => {
         e.preventDefault();
-        const newComment = { user, text, createdAt: new Date().toISOString(), replies: [] };
-        const dbComment = { user, text, createdAt: new Date().toISOString() };
+        const newReply = { user, text, createdAt: new Date().toISOString() };
+        const dbReply = { user, text };
 
         try {
-            const response = await axios.post(`http://localhost:8000/comment?id=${id}`, dbComment, {
+            const response = await axios.post(`http://localhost:8000/comment/reply?postid=${postId}&commentid=${commentId}`, dbReply, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`
                 }
-            })
+            });
             
             console.log(response.data.message);
-            addComment(newComment);
+            addReply(newReply);
             setUser('');
             setText('');
         } catch (error) {
-            console.error('Error adding comment');
+            console.error('Error adding reply');
             console.error(error);
         }
     };
 
     return (
-        <Box as="form" mt={4} onSubmit={handleCommentSubmit}>
+        <Box as="form" mt={4} onSubmit={handleReplySubmit}>
             <FormControl isRequired>
                 <FormLabel>Author</FormLabel>
                 <Input
@@ -43,7 +41,7 @@ const CommentForm = ({ addComment }) => {
                 />
             </FormControl>
             <FormControl isRequired mt={4}>
-                <FormLabel>Comment</FormLabel>
+                <FormLabel>Reply</FormLabel>
                 <Textarea
                     value={text}
                     onChange={(e) => setText(e.target.value)}
@@ -57,4 +55,4 @@ const CommentForm = ({ addComment }) => {
     );
 };
 
-export default CommentForm;
+export default ReplyForm;
