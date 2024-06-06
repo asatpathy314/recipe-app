@@ -3,11 +3,12 @@ import { SimpleGrid, Input, Button, Box, Heading, Link } from '@chakra-ui/react'
 import axios from 'axios';
 import RecipePreview from './RecipePreview';
 import TagsSearch from './TagsSearch'
+import ErrorPage from './ErrorPage';
 import { AuthContext } from '../components/AuthProvider';
 import '../styles/discover-page.css'
 
 const DiscoverPage = () => {
-    const { accessToken } = useContext(AuthContext);
+    const { accessToken, isLoggedIn } = useContext(AuthContext);
     const [query, setQuery] = useState('');
     const [userMade, setUserMade] = useState('');
     const [isSearch, setIsSearch] = useState(false);
@@ -15,7 +16,7 @@ const DiscoverPage = () => {
     const [meal, setMeal] = useState('');
     const [cuisine, setCuisine] = useState('');
     const [dish, setDish] = useState('');
-   
+    
     const extractID = (url) => {
 
         // Extract the part after the hash (#)
@@ -57,6 +58,12 @@ const DiscoverPage = () => {
         console.log(recipes);
         fetchSearch();
     }
+
+    if (isLoggedIn === "false") {
+        return (
+            <ErrorPage code={403} message="Forbidden" />
+        )
+      }
 
     return (
         <>

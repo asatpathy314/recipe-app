@@ -12,6 +12,7 @@ import Create from './routes/Create'
 import Hero from './routes/Hero.jsx'
 import RecipeDetailPage from './components/RecipeDetailpage.jsx'
 import AuthProvider from './components/AuthProvider.jsx'
+import ErrorPage from './components/ErrorPage.jsx'
 
 // Routes
 // If you want to use the Navbar add your component to children, otherwise add it to the end of the list as a new object.
@@ -53,6 +54,10 @@ const router = createBrowserRouter([
   {
     path: '/register',
     element: <Register />
+  },
+  {
+    path: '*', // Catch-all route
+    element: <ErrorPage code={404} message="Not Found" /> // Render the Error404 component
   }
 ])
 

@@ -3,9 +3,10 @@ import { AuthContext } from './AuthProvider';
 import { SimpleGrid, Heading, Link, Text } from '@chakra-ui/react';
 import axios from 'axios';
 import RecipePreview from './RecipePreview';
+import ErrorPage from './ErrorPage';
 
 const AdminPage = () => {
-  const { accessToken, email } = useContext(AuthContext);
+  const { accessToken, email, userID, isLoggedIn } = useContext(AuthContext);
   const [recipes, setRecipes] = useState([]);
 
   useEffect(() => {
@@ -19,7 +20,11 @@ const AdminPage = () => {
     };
     fetchData();
   }, [accessToken]);
-
+  if (isLoggedIn === "false" || email !== 'admin@savorytastes.org') {
+    return (
+        <ErrorPage code={403} message="Forbidden" />
+    )
+  }
   return (
     <>
       <div className='main-container'>

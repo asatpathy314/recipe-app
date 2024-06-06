@@ -28,7 +28,6 @@ const RecipeDetailPage = ({ match }) => {
   const { accessToken, userID } = useContext(AuthContext);
   const { id } = useParams();
   const navigate = useNavigate();
-  console.log(id);
   const [recipe, setRecipe] = useState(null);
   const [isSaved, setIsSaved] = useState(false);
   const [isApproved, setIsApproved] = useState(false);
@@ -48,7 +47,6 @@ const RecipeDetailPage = ({ match }) => {
         );
         setRecipe(response.data);
         setIsApproved(response.data.isApproved);
-        console.log(response.data);
       } catch (error) {
         console.error("Error fetching recipe");
         console.error(error);
@@ -65,7 +63,6 @@ const RecipeDetailPage = ({ match }) => {
             },
           }
         );
-        console.log('here', response.data);
         setIsSaved(response.data.isSaved);
       } catch (error) {
         console.error("Error checking if recipe is saved");

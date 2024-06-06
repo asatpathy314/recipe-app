@@ -1,4 +1,3 @@
-// Source: https://chakra-templates.dev/navigation/navbar/
 import {
   Box,
   Flex,
@@ -7,7 +6,6 @@ import {
   Button,
   Stack,
   Collapse,
-  Icon,
   Link,
   Popover,
   PopoverTrigger,
@@ -18,69 +16,42 @@ import {
 import { HamburgerIcon, CloseIcon, ChevronDownIcon } from "@chakra-ui/icons";
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { AuthContext }  from "./AuthProvider";
+import { AuthContext } from "./AuthProvider";
 
-const getNavItems = ( { isAdmin, isLoggedIn }) => {
-    if (isAdmin) {
-        return (
-            [
-            {
-              label: "Admin Dashboard",
-              href: "/admin",
-            },
-            {
-              label: "Discover",
-              href: "/discover",
-            },
-            {
-              label: "My Recipes",
-              href: "/my-recipes",
-            },
-            {
-              label: "Create A Recipe",
-              href: "/create",
-              }, 
-            ]
-        )
-    }
-    else if (isLoggedIn === "true") {
-        return (
-            [
-            {
-            label: "Discover",
-            href: "/discover",
-            },
-            {
-            label: "My Recipes",
-            href: "#",
-            },   
-            {
-              label: "Create A Recipe",
-              href: "create",
-              }, 
-            ]
-        )
-    } else {
-        return (
-            []
-        )
-    }
-}
-
+const getNavItems = ({ isAdmin, isLoggedIn }) => {
+  if (isAdmin) {
+    return [
+      { label: "Admin Dashboard", href: "/admin" },
+      { label: "Discover", href: "/discover" },
+      { label: "My Recipes", href: "/my-recipes" },
+      { label: "Create A Recipe", href: "/create" },
+    ];
+  } else if (isLoggedIn) {
+    return [
+      { label: "Discover", href: "/discover" },
+      { label: "My Recipes", href: "/my-recipes" },
+      { label: "Create A Recipe", href: "/create" },
+    ];
+  } else {
+    return [];
+  }
+};
 
 export default function Navbar() {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   const { isOpen, onToggle } = useDisclosure();
-  const { email, isLoggedIn, setEmail, setUserID, setAccessToken, setIsLoggedIn} = useContext(AuthContext);
+  const { email, isLoggedIn, setEmail, setUserID, setAccessToken, setIsLoggedIn } = useContext(AuthContext);
   const logout = () => {
-        localStorage.clear();
-        setEmail('');
-        setUserID('');
-        setAccessToken('');
-        setIsLoggedIn(false);
-        navigate('/');
-    };
+    localStorage.clear();
+    setEmail('');
+    setUserID('');
+    setAccessToken('');
+    setIsLoggedIn(false);
+    navigate('/');
+  };
   const isAdmin = email === "admin@savorytastes.org";
+  const loggedIn = isLoggedIn === true;
+
   return (
     <Box>
       <Flex
@@ -98,25 +69,23 @@ export default function Navbar() {
         >
           <IconButton
             onClick={onToggle}
-            icon={
-              isOpen ? <CloseIcon w={3} h={3} /> : <HamburgerIcon w={5} h={5} />
-            }
+            icon={isOpen ? <CloseIcon w={3} h={3} /> : <HamburgerIcon w={5} h={5} />}
             variant={"ghost"}
             aria-label={"Toggle Navigation"}
           />
         </Flex>
         <Flex flex={{ base: 1 }} justify={{ base: "center", md: "start" }}>
           <Link href={"/"}>
-          <Text
-            textAlign={useBreakpointValue({ base: "center", md: "left" })}
-            fontFamily={"heading"}
-          >
-            Savory Stories
-          </Text>
+            <Text
+              textAlign={useBreakpointValue({ base: "center", md: "left" })}
+              fontFamily={"heading"}
+            >
+              Savory Stories
+            </Text>
           </Link>
 
           <Flex display={{ base: "none", md: "flex" }} ml={10}>
-            <DesktopNav isAdmin={isAdmin} isLoggedIn={isLoggedIn} />
+            <DesktopNav isAdmin={isAdmin} isLoggedIn={loggedIn} />
           </Flex>
         </Flex>
 
@@ -126,55 +95,54 @@ export default function Navbar() {
           direction={"row"}
           spacing={6}
         >
-        {!isLoggedIn ? (
-          <Button
-            as={"a"}
-            fontSize={"sm"}
-            fontWeight={400}
-            variant={"link"}
-            href={"/login"}
-          >
-            Sign In
-          </Button>
-        ) : (
+          {!loggedIn ? (
             <Button
-            fontSize={"sm"}
-            fontWeight={400}
-            onClick={logout}
+              as={"a"}
+              fontSize={"sm"}
+              fontWeight={400}
+              variant={"link"}
+              href={"/login"}
             >
-                Sign Out
-            </Button>        
-        )}
-        {!isLoggedIn && (
-          <Button
-            as={"a"}
-            display={{ base: "none", md: "inline-flex" }}
-            fontSize={"sm"}
-            fontWeight={600}
-            color={"white"}
-            bg={"#ff8e3c"}
-            href={"/register"}
-            _hover={{
-              bg: "#ff9d56",
-            }}
-          >
-            Sign Up
-          </Button>
-        )}
+              Sign In
+            </Button>
+          ) : (
+            <Button
+              fontSize={"sm"}
+              fontWeight={400}
+              onClick={logout}
+            >
+              Sign Out
+            </Button>
+          )}
+          {!loggedIn && (
+            <Button
+              as={"a"}
+              display={{ base: "none", md: "inline-flex" }}
+              fontSize={"sm"}
+              fontWeight={600}
+              color={"white"}
+              bg={"#ff8e3c"}
+              href={"/register"}
+              _hover={{
+                bg: "#ff9d56",
+              }}
+            >
+              Sign Up
+            </Button>
+          )}
         </Stack>
       </Flex>
 
       <Collapse in={isOpen} animateOpacity>
-        <MobileNav isAdmin={isAdmin} isLoggedIn={isLoggedIn}/>
+        <MobileNav isAdmin={isAdmin} isLoggedIn={loggedIn} />
       </Collapse>
     </Box>
   );
 }
 
-const DesktopNav = ( {isAdmin, isLoggedIn} ) => {
+const DesktopNav = ({ isAdmin, isLoggedIn }) => {
   const linkColor = "#2a2a2a";
-  const linkHoverColor = useColorModeValue("gray.800", "white");
-  const NAV_ITEMS = getNavItems({isAdmin, isLoggedIn});
+  const NAV_ITEMS = getNavItems({ isAdmin, isLoggedIn });
 
   return (
     <Stack direction={"row"} spacing={4}>
@@ -199,8 +167,9 @@ const DesktopNav = ( {isAdmin, isLoggedIn} ) => {
   );
 };
 
-const MobileNav = ( {isAdmin, isLoggedIn} ) => {
-    const NAV_ITEMS = getNavItems({isAdmin, isLoggedIn});
+const MobileNav = ({ isAdmin, isLoggedIn }) => {
+  const NAV_ITEMS = getNavItems({ isAdmin, isLoggedIn });
+
   return (
     <Stack
       bg={useColorModeValue("white", "gray.800")}

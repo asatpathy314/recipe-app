@@ -6,16 +6,9 @@ import {
   Heading,
   IconButton,
 } from '@chakra-ui/react';
-import { FaCheckCircle, FaTimesCircle } from "react-icons/fa";
 import '../styles/recipe-preview.css'
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom'
 
 const RecipePreview = ({data, forAdmin, forMyRecipes}) => {
-  const handleApprove = () => {
-  }
-  const handleDelete = () => {
-  }
 
   return (
     <>

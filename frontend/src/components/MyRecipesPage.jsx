@@ -6,6 +6,7 @@ import {
   SimpleGrid,
   Box,
   Heading,
+  Link,
 } from "@chakra-ui/react";
 
 const MyRecipesPage = () => {
@@ -34,7 +35,11 @@ const MyRecipesPage = () => {
           <Heading mb={6}>Saved Recipes</Heading>
           <SimpleGrid columns={{ base: 1, sm: 2, md: 3, lg: 4 }} spacing={5}>
             {recipes.map((recipe, idx) => {
-              return <RecipePreview key={idx} data={recipe} forMyRecipes={true} />;
+              return (
+              <Link key={idx} href={`/recipe/${recipe.id}`}>
+                <RecipePreview data={recipe} forMyRecipes={true} />
+              </Link>
+            );
             })}
           </SimpleGrid>
         </Box>

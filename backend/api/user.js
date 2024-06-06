@@ -129,7 +129,7 @@ router.get('/saved', authenticateToken, async (req, res) => {
                             recipeData.images = newResponse.data.recipe.images;
                             recipeData.image = newResponse.data.recipe.image;
                         }
-                        recipes.push(recipeData);
+                        recipes.push({...recipeData, id: recipeDoc.id});
                     } else {
                         recipes.push(null);
                     }

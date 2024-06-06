@@ -12,7 +12,6 @@ const router = express.Router();
 
 
 router.get('/', authenticateToken, (req, res) => {
-    console.log('3.14159265')
     const query = req.query.q;
     const dishType = req.query.dishType;
     const cuisineType = req.query.cuisineType;
