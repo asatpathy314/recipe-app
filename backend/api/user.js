@@ -16,7 +16,8 @@ router.post('/save', authenticateToken, async (req, res) => {
         const userDoc = await userRef.get();
 
         if (!userDoc.exists) {
-            return res.status(404).send('User not found');
+            userRef.set({ recipes: [db.collection('recipe').doc(recipeId)] });
+            res.status(200).send('Recipe saved')
         }
 
         const userData = userDoc.data();
@@ -62,5 +63,25 @@ router.post('/unsave', authenticateToken, async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
+
+router.get('/isSaved', authenticateToken, async (req, res) => {
+    const userId = req.query.userid;
+    const recipeId = req.query.recipeid;
+    const docRef = db.collection('user').doc(userId);
+    try {
+        await docRef.get().then((doc) => {
+            if (doc.exists) {
+                const userData = doc.data();
+                const savedRecipes = userData.recipes || [];
+                res.status(200).json({ isSaved: savedRecipes.includes(`/recipe/${recipeId}`) });
+            } else {
+                res.status(404).send('User not found');
+            }
+        });
+    } catch (error) {
+        console.error('Error checking if recipe is saved:', error);
+        res.status(500).send('Internal Server Error');
+    }
+})
 
 module.exports = router;

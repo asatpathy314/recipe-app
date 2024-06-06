@@ -25,7 +25,7 @@ import Chatbot from "./Chatbot";
 import Replies from "./Replies";
 
 const RecipeDetailPage = ({ match }) => {
-  const { accessToken } = useContext(AuthContext);
+  const { accessToken, userID } = useContext(AuthContext);
   const { id } = useParams();
   const navigate = useNavigate();
   console.log(id);
@@ -54,23 +54,64 @@ const RecipeDetailPage = ({ match }) => {
         console.error(error);
       }
     };
+
+    const checkIfSaved = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8000/user/isSaved?userid=${userID}&recipeid=${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+        console.log('here', response.data);
+        setIsSaved(response.data.isSaved);
+      } catch (error) {
+        console.error("Error checking if recipe is saved");
+        console.error(error);
+      }
+    };
+
     fetchData();
-  }, [accessToken, id]);
+    checkIfSaved();
+  }, [accessToken, id, userID]);
 
   const handleSave = async () => {
-    await axios.post(
-      `http://localhost:8000/recipe/getByID/${id}`,
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    );
-  }
+    try {
+      await axios.post(
+        `http://localhost:8000/user/save?userid=${userID}&recipeid=${id}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      setIsSaved(true);
+    } catch (error) {
+      console.error("Error saving recipe");
+      console.error(error);
+    }
+  };
 
   const handleUnsave = async () => {
-
-  }
+    try {
+      await axios.post(
+        `http://localhost:8000/user/unsave?userid=${userID}&recipeid=${id}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      setIsSaved(false);
+    } catch (error) {
+      console.error("Error unsaving recipe");
+      console.error(error);
+    }
+  };
 
   const handleDelete = async () => {
     try {
@@ -88,7 +129,8 @@ const RecipeDetailPage = ({ match }) => {
       console.error("Error deleting recipe");
       console.error(error);
     }
-  }
+  };
+
   const handleApprove = async () => { 
     try {
       await axios.post(
@@ -102,20 +144,22 @@ const RecipeDetailPage = ({ match }) => {
       navigate(-1);
       window.location.reload();
     } catch (error) {
-      console.error("Error deleting recipe");
+      console.error("Error approving recipe");
       console.error(error);
     }
-  }
+  };
 
   if (recipe !== null) {
     return (
       <Container maxW={"7xl"} p={10}>
         <Flex justifyContent="flex-end" mb={4}>
-          {isApproved && (isSaved ? (
-            <Button onClick={handleSave}>Save</Button>
-          ) : (
-            <Button onClick={handleUnsave}>Unsave</Button>
-          ))}
+          {isApproved && (
+            isSaved ? (
+              <Button onClick={handleUnsave}>Unsave</Button>
+            ) : (
+              <Button onClick={handleSave}>Save</Button>
+            )
+          )}
           {!isApproved && 
             <>
               <IconButton
