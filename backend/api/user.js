@@ -145,4 +145,24 @@ router.get('/saved', authenticateToken, async (req, res) => {
     }
 });
 
+router.get('/created', authenticateToken, async (req, res) => {
+    const user = req.query.user;
+    const docRef = db.collection('recipe');
+    try {
+        await docRef.get().then((snapshot) => {
+            const recipes = [];
+            snapshot.forEach((doc) => {
+                const recipeData = doc.data();
+                if (recipeData.source === user) {
+                    recipes.push({...recipeData, id: doc.id});
+                }
+            });
+            res.status(200).json({ recipes });
+        });
+    } catch (error) {
+        console.error('Error getting created recipes:', error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
 module.exports = router;
