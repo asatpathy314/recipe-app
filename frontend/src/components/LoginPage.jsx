@@ -36,7 +36,7 @@ import {
           setAccessToken(userCredential.user.accessToken);
           setUserID(userCredential.user.uid);
           setIsLoggedIn(true);
-          window.location.href="/";
+          navigate("/", { replace: true });
         })
         .catch((error) => {
           console.log(error.message)
