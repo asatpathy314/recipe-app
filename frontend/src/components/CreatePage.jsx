@@ -25,10 +25,11 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom'; 
 import { AuthContext } from './AuthProvider';
 import TagsSearch from './TagsSearch';
+import ErrorPage from './ErrorPage';
 
 const CreateRecipe = () => {
   const navigate = useNavigate();
-  const { accessToken, email } = useContext(AuthContext);
+  const { accessToken, email, isLoggedIn } = useContext(AuthContext);
   const [label, setLabel] = useState('');
   const [calories, setCalories] = useState('');
   const [ingredients, setIngredients] = useState(['']);
@@ -71,6 +72,12 @@ const CreateRecipe = () => {
   const handlePhotoDelete = () => {
     setPhoto(null);
   };
+  console.log(isLoggedIn)
+  if (isLoggedIn === "false") {
+    return (
+        <ErrorPage code={403} message="Forbidden" />
+    )
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();

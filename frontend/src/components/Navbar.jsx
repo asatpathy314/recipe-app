@@ -12,9 +12,10 @@ import {
   useColorModeValue,
   useBreakpointValue,
   useDisclosure,
+  Icon,
 } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon, ChevronDownIcon } from "@chakra-ui/icons";
-import { useContext } from "react";
+import { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "./AuthProvider";
 
@@ -41,6 +42,7 @@ export default function Navbar() {
   const navigate = useNavigate();
   const { isOpen, onToggle } = useDisclosure();
   const { email, isLoggedIn, setEmail, setUserID, setAccessToken, setIsLoggedIn } = useContext(AuthContext);
+  
   const logout = () => {
     localStorage.clear();
     setEmail('');
@@ -49,8 +51,14 @@ export default function Navbar() {
     setIsLoggedIn(false);
     navigate('/');
   };
-  const isAdmin = email === "admin@savorytastes.org";
-  const loggedIn = isLoggedIn === true;
+
+  const [admin, setAdmin] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
+
+  useEffect(() => {
+    setAdmin(email === "admin@savorytastes.org");
+    setLoggedIn(isLoggedIn === "true");
+  }, [isLoggedIn, email]);
 
   return (
     <Box>
@@ -85,7 +93,7 @@ export default function Navbar() {
           </Link>
 
           <Flex display={{ base: "none", md: "flex" }} ml={10}>
-            <DesktopNav isAdmin={isAdmin} isLoggedIn={loggedIn} />
+            <DesktopNav isAdmin={admin} isLoggedIn={loggedIn} />
           </Flex>
         </Flex>
 
@@ -134,7 +142,7 @@ export default function Navbar() {
       </Flex>
 
       <Collapse in={isOpen} animateOpacity>
-        <MobileNav isAdmin={isAdmin} isLoggedIn={loggedIn} />
+        <MobileNav isAdmin={admin} isLoggedIn={loggedIn} />
       </Collapse>
     </Box>
   );
