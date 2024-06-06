@@ -32,6 +32,7 @@ const RecipeDetailPage = ({ match }) => {
   const [recipe, setRecipe] = useState(null);
   const [isSaved, setIsSaved] = useState(false);
   const [isApproved, setIsApproved] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
 
@@ -71,8 +72,13 @@ const RecipeDetailPage = ({ match }) => {
       }
     };
 
-    fetchData();
-    checkIfSaved();
+    const loadData = async () => {
+      await fetchData();
+      await checkIfSaved();
+      setIsLoading(false);
+    };
+
+    loadData();
   }, [accessToken, id, userID]);
 
   const handleSave = async () => {
@@ -264,7 +270,10 @@ const RecipeDetailPage = ({ match }) => {
         <Replies replies={recipe.comments} />
       </Container>
     );
-  } else {
+  } else if (isLoading) {
+    return <ErrorPage message="Loading..." />;
+  }
+    else {
     return <ErrorPage code={404} message="Recipe not Found" />;
   }
 };
