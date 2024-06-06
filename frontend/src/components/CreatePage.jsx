@@ -95,7 +95,7 @@ const CreateRecipe = () => {
       calories,
       isApproved: false,
       isUserGenerated: true,
-      formattedIngredients
+      ingredients: formattedIngredients
     };
 
     console.log(recipeData)
