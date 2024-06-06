@@ -16,6 +16,29 @@ router.get('/', authenticateToken, (req, res) => {
     const dishType = req.query.dishType;
     const cuisineType = req.query.cuisineType;
     const mealType = req.query.mealType;
+    const userMade = req.query.userMade;
+    console.log(req.query)
+    console.log(userMade)
+
+    if (userMade === 'User-generated') {
+        const user = req.query.user;
+        db.collection('recipe').where('isUserGenerated', '==', true).get() // TODO: filter results by params
+            .then((snapshot) => {
+                const recipes = [];
+                snapshot.forEach((doc) => {
+                    recipes.push({
+                        ...doc.data(),
+                        id: doc.id,
+                    });
+                });
+                res.status(200).json(recipes);
+            })
+            .catch((error) => {
+                console.error(error);
+                res.status(500).json({ message: 'Internal Server Error' });
+            });
+        return;
+    }
     
     if (!dishType && !cuisineType && !mealType && !query) {
         return res.status(400).json({ message: 'Invalid query' });
@@ -146,7 +169,6 @@ router.get("/unapproved", authenticateToken, async (req, res) => {
 });
 
 router.get('/getByID/:id', authenticateToken, async (req, res, next) => {
-    console.log('3.14159265')
     const recipeId = req.params.id;
     const fieldsInitial = ['image', 'images'];
     const fieldsFinal = [
@@ -214,10 +236,8 @@ router.get('/getByID/:id', authenticateToken, async (req, res, next) => {
             recipeData.comments = comments;
 
             res.status(200).json(recipeData);
-            console.log(recipeData);
         } else {
             const response = await axios.get(`${baseURL}/${recipeId}`, optionsFinal);
-            console.log(response.data.recipe);
             const newRecipe = {
                 ...response.data.recipe,
                 isUserGenerated: false,

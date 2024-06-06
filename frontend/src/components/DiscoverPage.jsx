@@ -17,9 +17,12 @@ const DiscoverPage = () => {
     const [cuisine, setCuisine] = useState('');
     const [dish, setDish] = useState('');
     
-    const extractID = (url) => {
+    const extractID = (url, recipeData) => {
 
         // Extract the part after the hash (#)
+        if (!url) {
+            return recipeData.id;
+        }
         const id = url.split('#recipe_')[1];
         return id;
     }
@@ -44,7 +47,7 @@ const DiscoverPage = () => {
     const handleSubmit = async () => {
         const fetchSearch = async () => {
             try {
-                const response = await axios.get(`http://localhost:8000/recipe?q=${query}&mealType=${meal}&cuisineType=${cuisine}&dishType=${dish}`, {
+                const response = await axios.get(`http://localhost:8000/recipe?q=${query}&mealType=${meal}&cuisineType=${cuisine}&dishType=${dish}&userMade=${userMade}`, {
                     headers: {
                         Authorization: `Bearer ${accessToken}`
                     }
@@ -107,7 +110,7 @@ const DiscoverPage = () => {
                         spacing={5}>
                         {recipes.map((recipe, idx)=>{
                             return (
-                            <Link key={idx} href={`/recipe/${extractID(recipe.uri)}`}>
+                            <Link key={idx} href={`/recipe/${extractID(recipe.uri, recipe)}`}>
                                 <RecipePreview data={recipe} forAdmin={false}/>
                             </Link>
                         )
