@@ -33,15 +33,26 @@ const CommentForm = ({ addComment }) => {
     return (
         <Box as="form" mt={4} onSubmit={handleCommentSubmit}>
             <FormControl isRequired mt={4}>
-                <FormLabel>Comment</FormLabel>
+                <FormLabel>Add a comment</FormLabel>
                 <Textarea
+                    maxLength={450}
                     value={text}
                     onChange={(e) => setText(e.target.value)}
                     rows={4}
                 />
             </FormControl>
-            <Button mt={4} colorScheme="teal" type="submit">
-                Submit
+            <Button 
+                mb={6}
+                mt={4}
+                type="submit"
+                color={"white"}
+                fontSize={"sm"}
+                fontWeight={600}
+                bg={"#ff8e3c"}
+                _hover={{
+                    bg: "#ff9d56",
+                  }}>
+                Comment
             </Button>
         </Box>
     );
