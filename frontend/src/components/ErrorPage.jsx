@@ -4,6 +4,8 @@ import {
     Text,
     Box,
   } from '@chakra-ui/react';
+import { ArrowBackIcon } from '@chakra-ui/icons'
+import BackButton from './BackButton';
   
   export default function ErrorPage({ code, message }) {
     return (
@@ -19,6 +21,7 @@ import {
         justifyContent="center"
         bg="white" // Optional: Set a background color if needed
       >
+        <BackButton icon={<ArrowBackIcon />} bg="transparent" />
         <Container maxW={'3xl'} textAlign="center">
           <Heading
             fontWeight={600}

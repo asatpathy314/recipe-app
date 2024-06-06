@@ -23,9 +23,10 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from "./AuthProvider";
 import Chatbot from "./Chatbot";
 import Replies from "./Replies";
+import ErrorPage from "./ErrorPage";
 
 const RecipeDetailPage = ({ match }) => {
-  const { accessToken, userID } = useContext(AuthContext);
+  const { accessToken, userID, isLoggedIn } = useContext(AuthContext);
   const { id } = useParams();
   const navigate = useNavigate();
   const [recipe, setRecipe] = useState(null);
@@ -145,6 +146,11 @@ const RecipeDetailPage = ({ match }) => {
       console.error(error);
     }
   };
+  console.log(recipe)
+  if (!isLoggedIn) {
+    return <ErrorPage code={403} message="Forbidden" />;
+
+  }
 
   if (recipe !== null) {
     return (
@@ -258,6 +264,8 @@ const RecipeDetailPage = ({ match }) => {
         <Replies replies={recipe.comments} />
       </Container>
     );
+  } else {
+    return <ErrorPage code={404} message="Recipe not Found" />;
   }
 };
 
