@@ -2,9 +2,12 @@
 const express = require('express');
 const authenticateToken = require('../middleware/authenticateToken');
 const dotenv = require('dotenv');
+const axios = require('axios');
 const { db } = require('../firebaseAdmin');
 dotenv.config();
 const router = express.Router();
+const baseURL = 'https://api.edamam.com/api/recipes/v2'; // can add /{id} to get a specific recipe by id
+
 
 // Save a recipe to a user's saved recipes
 router.post('/save', authenticateToken, async (req, res) => {
@@ -16,8 +19,9 @@ router.post('/save', authenticateToken, async (req, res) => {
         const userDoc = await userRef.get();
 
         if (!userDoc.exists) {
-            userRef.set({ recipes: [db.collection('recipe').doc(recipeId)] });
-            res.status(200).send('Recipe saved')
+            await userRef.set({ recipes: [`/recipe/${recipeId}`] });
+            res.status(200).send('Recipe saved');
+            return
         }
 
         const userData = userDoc.data();
@@ -26,12 +30,14 @@ router.post('/save', authenticateToken, async (req, res) => {
         if (!savedRecipes.includes(`/recipe/${recipeId}`)) {
             savedRecipes.push(`/recipe/${recipeId}`);
             await userRef.update({ recipes: savedRecipes });
+            return
         }
-
         res.status(200).send('Recipe saved successfully');
+        return
     } catch (error) {
         console.error('Error saving recipe:', error);
         res.status(500).send('Internal Server Error');
+        return
     }
 });
 
@@ -75,13 +81,68 @@ router.get('/isSaved', authenticateToken, async (req, res) => {
                 const savedRecipes = userData.recipes || [];
                 res.status(200).json({ isSaved: savedRecipes.includes(`/recipe/${recipeId}`) });
             } else {
-                res.status(404).send('User not found');
+                res.status(200).send({ isSaved: false });
             }
         });
     } catch (error) {
         console.error('Error checking if recipe is saved:', error);
         res.status(500).send('Internal Server Error');
     }
-})
+});
+
+router.get('/saved', authenticateToken, async (req, res) => {
+    const userId = req.query.userid;
+    const docRef = db.collection('user').doc(userId);
+    try {
+        await docRef.get().then(async (doc) => {
+            if (doc.exists) {
+                const userData = doc.data();
+                const savedRecipes = userData.recipes || [];
+                
+                // Iterate through the savedRecipes array and get the recipe data for each recipe ID
+                const recipeIDs = savedRecipes.map((recipePath) => {
+                    return (recipePath.split('/').pop());
+                });
+                const recipes = []
+                console.log(recipeIDs)
+                for (const recipeID of recipeIDs) {
+                    const recipeRef = db.collection('recipe').doc(recipeID);
+                    const recipeDoc = await recipeRef.get();
+                    const recipeData = recipeDoc.data();
+                    const fieldsInitial = ['image', 'images'];
+
+                    const optionsInitial = {
+                        params: {
+                            app_id: process.env.APP_ID,
+                            app_key: process.env.APP_KEY,
+                            id: recipeDoc.id,
+                            type: 'public',
+                            field: fieldsInitial,
+                        },
+                        paramsSerializer: {
+                            indexes: null,
+                        }
+                    };
+                    if (recipeDoc.exists) {
+                        if (!recipeData.isUserGenerated) {
+                            const newResponse = await axios.get(`${baseURL}/${recipeDoc.id}`, optionsInitial);
+                            recipeData.images = newResponse.data.recipe.images;
+                            recipeData.image = newResponse.data.recipe.image;
+                        }
+                        recipes.push(recipeData);
+                    } else {
+                        recipes.push(null);
+                    }
+                }
+                res.status(200).json({ recipes: recipes.filter(recipe => recipe !== null) });
+            } else {
+                res.status(404).send('User not found');
+            }
+        });
+    } catch (error) {
+        console.error('Error getting saved recipes:', error);
+        res.status(500).send('Internal Server Error');
+    }
+});
 
 module.exports = router;
