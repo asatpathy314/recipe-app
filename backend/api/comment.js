@@ -77,4 +77,43 @@ router.post('/reply', authenticateToken, async (req, res) => {
     }
 });
 
+router.delete('/', authenticateToken, async (req, res) => {
+    const recipeid = req.query.recipeid;
+    const commentid = req.query.commentid;
+    const snapshot = await db.collection("recipe").doc(recipeid).collection("comment").doc(commentid).collection("reply").get()
+    // if (snapshot.empty){
+        try {
+            await db.collection("recipe").doc(recipeid)
+                    .collection("comment").doc(commentid).delete();
+            res.status(200).json({ message: "Successfully deleted a comment " });
+        } catch (error) {
+            res.status(500).json({ message: "Error deleting comment", error });
+        }
+    // } else{
+    //     try {
+    //         await db.collection("recipe").doc(recipeid)
+    //                 .collection("comment").doc(commentid).update({text: "[This comment was deleted by the user.]"});
+    //         res.status(200).json({ message: "Successfully deleted a comment WITH replies" });
+    //     } catch (error) {
+    //         res.status(500).json({ message: "Error deleting comment", error });
+    //     }
+    // }
+});
+
+router.delete('/reply', authenticateToken, async (req, res) => {
+    const recipeid = req.query.recipeid;
+    const commentid = req.query.commentid;
+    const replyid = req.query.replyid;
+    try {
+        await db.collection("recipe").doc(recipeid)
+                .collection("comment").doc(commentid)
+                .collection("reply").doc(replyid).delete();
+        res.status(200).json({ message: "Successfully deleted a reply" });
+    } catch (error) {
+        res.status(500).json({ message: "Error deleting reply", error });
+    }
+});
+
+
+
 module.exports = router;

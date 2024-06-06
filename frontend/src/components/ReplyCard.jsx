@@ -1,40 +1,73 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { Card, CardHeader, CardBody, CardFooter, Box, Text, IconButton, Flex, Stack } from '@chakra-ui/react';
-import { FaReply } from "react-icons/fa";
+import { FaReply, FaTrash  } from "react-icons/fa";
 import ReplyForm from './ReplyForm.jsx';
+import { AuthContext } from './AuthProvider';
+import axios from 'axios';
 
-const ReplyCard = ({ isComment, postId, commentId, author, content, date, addReply, ...rest }) => {
+const ReplyCard = ({ isComment, postId, commentId, replyId, author, content, date, addReply, deleteReply, deleteComment, ...rest }) => {
     const [showReplyForm, setShowReplyForm] = useState(false);
+    const { accessToken, email } = useContext(AuthContext);
 
     const handleReplyClick = () => {
         setShowReplyForm(!showReplyForm);
     };
+    
+    const handleDeleteClick = async () => {
+        if (isComment) {
+            try {
+                await axios.delete(`http://localhost:8000/comment?recipeid=${postId}&commentid=${commentId}`, {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`
+                    }
+                });
+                deleteComment(commentId);
+            } catch (error) {
+                console.error('Error deleting comment');
+                console.error(error);
+            }
+        } else {
+            try {
+                await axios.delete(`http://localhost:8000/comment/reply?recipeid=${postId}&commentid=${commentId}&replyid=${replyId}`, {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`
+                    }
+                });
+                deleteReply(commentId, replyId);
+            } catch (error) {
+                console.error('Error deleting reply');
+                console.error(error);
+            }
+        }
+    }
+    
 
     return (
-        <Card borderWidth="1px" borderRadius="lg" overflow="hidden" boxShadow="md" direction="row" mb={4} {...rest}>
-            <CardHeader>
-                <Flex alignItems="center">
-                    <Box ml="3">
+        <Card border="1px solid #cacaca" boxShadow="none" borderRadius="lg" pb={4} pt={5} mb={4} {...rest}>
+            <CardHeader pt={0} pb={0}>
+                <Flex justifyContent="space-between">
                         <Text fontWeight="bold">{author}</Text>
-                        <Text fontSize="sm" color="gray.500">{date}</Text>
-                    </Box>
+                        <Text fontSize="sm" color="gray.500">{date.slice(0,10)}</Text>
                 </Flex>
             </CardHeader>
-            <CardBody>
+            <CardBody pt={2} pb={0}>
                 <Stack>
-                <Text>{content}</Text>
-                {showReplyForm && isComment && (
-                <Box mt={4} ml={4}>
-                    <ReplyForm postId={postId} commentId={commentId} addReply={addReply} />
-                </Box>
-            )}
-            </Stack>
+                    <Text>{content}</Text>
+                    {showReplyForm && isComment && (
+                    <Box mt={0} ml={4}>
+                        <ReplyForm postId={postId} commentId={commentId} addReply={addReply} />
+                    </Box>
+                    )}
+                </Stack>
             </CardBody>
-            <CardFooter>
-                {isComment &&
-                <IconButton variant="solid" size="sm" bg="transparent" icon={<FaReply />} onClick={handleReplyClick} />
-                }   
-            </CardFooter>
+            {content !=="[This comment was deleted by the user.]" 
+            &&<CardFooter pt={2} pb={0}>
+            {isComment &&
+            <IconButton variant="solid" size="sm" bg="transparent" icon={<FaReply />} onClick={handleReplyClick} />
+            }
+            {email.split('@')[0]===author &&  <IconButton ml={2} variant="solid" size="sm" bg="transparent" icon={<FaTrash />} onClick={handleDeleteClick}/>}
+         </CardFooter>
+            }
         </Card>
     );
 };

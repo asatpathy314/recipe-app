@@ -1,5 +1,5 @@
 import { useState, useContext } from 'react';
-import { Box, Button, FormControl, FormLabel, Input, Textarea } from '@chakra-ui/react';
+import { Box, Button, FormControl, FormLabel, Textarea } from '@chakra-ui/react';
 import axios from 'axios';
 import { AuthContext } from './AuthProvider';
 
@@ -31,15 +31,25 @@ const ReplyForm = ({ postId, commentId, addReply }) => {
     return (
         <Box as="form" mt={4} onSubmit={handleReplySubmit}>
             <FormControl isRequired mt={4}>
-                <FormLabel>Reply</FormLabel>
+                <FormLabel>Your reply</FormLabel>
                 <Textarea
+                    maxLength={450}
                     value={text}
                     onChange={(e) => setText(e.target.value)}
                     rows={4}
                 />
             </FormControl>
-            <Button mt={4} colorScheme="teal" type="submit">
-                Submit
+            <Button 
+                mt={4}
+                type="submit"
+                color={"white"}
+                fontSize={"sm"}
+                fontWeight={600}
+                bg={"#ff8e3c"}
+                _hover={{
+                    bg: "#ff9d56",
+                  }}>
+                Reply
             </Button>
         </Box>
     );
