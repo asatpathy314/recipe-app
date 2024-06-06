@@ -8,9 +8,6 @@ import {
   Input,
   NumberInput,
   NumberInputField,
-  NumberInputStepper,
-  NumberIncrementStepper,
-  NumberDecrementStepper,
   Stack,
   Heading,
   IconButton,
@@ -38,11 +35,19 @@ const CreateRecipe = () => {
   const [dishType, setDishType] = useState('');
   const [cuisineType, setCuisineType] = useState('');
   const [mealType, setMealType] = useState('');
-  const [username, setUsername] = useState('');
-  const [photo, setPhoto] = useState(null);
   const [ingredientToDelete, setIngredientToDelete] = useState(null);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: isSuccessOpen,
+    onOpen: onSuccessOpen,
+    onClose: onSuccessClose
+  } = useDisclosure();
+  const {
+    isOpen: isErrorOpen,
+    onOpen: onErrorOpen,
+    onClose: onErrorClose
+  } = useDisclosure();
 
   const handleAddIngredient = () => setIngredients([...ingredients, '']);
   const handleRemoveIngredient = (index) => {
@@ -69,9 +74,13 @@ const CreateRecipe = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(ingredients);
-    const formattedIngredients = ingredients.map((ingredient, index) => ({ text: ingredient.trim() }));
-    console.log(formattedIngredients);
+    if (!label || !calories || ingredients.every(ingredient => !ingredient.trim())) {
+      onErrorOpen();
+      return;
+    }
+
+    const formattedIngredients = ingredients.map((ingredient) => ({ text: ingredient.trim() }));
+
     if (calories < 0) {
       setCalories(0);
     }
@@ -81,15 +90,14 @@ const CreateRecipe = () => {
     }
 
     if (mealType === 'Lunch' || mealType === 'Dinner') {
-      console.log("hehe")
-      setMealType('lunch/dinner')
+      setMealType('lunch/dinner');
     }
 
     const recipeData = {
       label,
-      dishType: [dishType],
-      mealType: [mealType],
-      cuisineType: [cuisineType],
+      dishType: dishType ? [dishType] : [],
+      mealType: mealType ? [mealType] : [],
+      cuisineType: cuisineType ? [cuisineType] : [],
       source: email.split('@')[0],
       image: "",
       calories,
@@ -98,14 +106,13 @@ const CreateRecipe = () => {
       ingredients: formattedIngredients
     };
 
-    console.log(recipeData)
     try {
       await axios.post('http://localhost:8000/recipe', recipeData, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-      navigate(-1);
+      onSuccessOpen();
     } catch (error) {
       console.error('Error creating recipe');
     }
@@ -136,9 +143,9 @@ const CreateRecipe = () => {
 
             <FormControl id="calories">
               <FormLabel>Calories</FormLabel>
-              <NumberInput min={0} max={15000} >
-              <NumberInputField placeholder="Enter the number of calories" value={calories} onChange={(e)=>{setCalories(e.target.value)}}/>
-            </NumberInput>
+              <NumberInput min={0} max={15000}>
+                <NumberInputField placeholder="Enter the number of calories" value={calories} onChange={(e) => { setCalories(e.target.value) }} />
+              </NumberInput>
             </FormControl>
 
             <FormControl id="ingredients">
@@ -184,23 +191,44 @@ const CreateRecipe = () => {
             </ModalFooter>
           </ModalContent>
         </Modal>
+
+        <Modal isOpen={isSuccessOpen} onClose={onSuccessClose}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Success!</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              Congrats, you submitted a recipe! Pending admin review to be officially uploaded.
+            </ModalBody>
+            <ModalFooter>
+              <Button colorScheme="blue" mr={3} onClick={() => {
+                onSuccessClose();
+                navigate(-1);
+              }}>
+                Close
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+
+        <Modal isOpen={isErrorOpen} onClose={onErrorClose}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Error</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              Please fill in all required fields before submitting.
+            </ModalBody>
+            <ModalFooter>
+              <Button colorScheme="blue" onClick={onErrorClose}>
+                Close
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
       </Box>
     </Flex>
   );
 };
 
 export default CreateRecipe;
-
-
-/*
-            <FormControl id="photo">
-              <FormLabel>Photo (optional)</FormLabel>
-              <Input type="file" onChange={handlePhotoUpload} />
-              {photo && (
-                <Flex mt={2} align="center">
-                  <Box mr={2}>{photo.name}</Box>
-                  <Button onClick={handlePhotoDelete}>Delete Photo</Button>
-                </Flex>
-              )}
-            </FormControl>
-            */
