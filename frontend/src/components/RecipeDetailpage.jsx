@@ -267,6 +267,7 @@ const RecipeDetailPage = ({ match }) => {
             </Stack>
           </SimpleGrid>
         )}
+        <Chatbot />
         <Replies replies={recipe.comments} />
       </Container>
     );

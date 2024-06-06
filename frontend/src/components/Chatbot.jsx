@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import {  Box, Accordion, AccordionItem, AccordionButton, AccordionPanel, AccordionIcon, Input, Button, Text, VStack } from '@chakra-ui/react';
+import { Box, Input, Button, Text, VStack, HStack, Avatar } from '@chakra-ui/react';
 import axios from 'axios';
 
 const Chatbot = () => {
@@ -27,7 +27,7 @@ const Chatbot = () => {
         },
       });
 
-      const assistantMessage = response.data;
+      const assistantMessage = response.data.message;
       setMessages([...updatedMessages, assistantMessage]);
     } catch (error) {
       console.error('Error fetching response:', error);
@@ -37,36 +37,37 @@ const Chatbot = () => {
   };
 
   return (
-      <Box p={4} maxW="600px" mx="auto">
-        <VStack spacing={4} as="form" onSubmit={handleSubmit}>
-          <Input
-            placeholder="Ask a cooking question..."
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            isDisabled={loading}
-          />
-          <Button type="submit" colorScheme="teal" isLoading={loading}>
-            Ask GPT
-          </Button>
-        </VStack>
-        <Accordion allowToggle mt={4}>
-          {messages.map((msg, index) => (
-            <AccordionItem key={index}>
-              <h2>
-                <AccordionButton>
-                  <Box flex="1" textAlign="left">
-                    {msg.role === 'user' ? 'You' : 'Assistant'}
-                  </Box>
-                  <AccordionIcon />
-                </AccordionButton>
-              </h2>
-              <AccordionPanel pb={4}>
-                <Text>{msg.content}</Text>
-              </AccordionPanel>
-            </AccordionItem>
-          ))}
-        </Accordion>
+    <Box p={4} maxW="600px" mx="auto" borderWidth="1px" borderRadius="lg" overflow="hidden" my={10}>
+      <VStack spacing={4} as="form" onSubmit={handleSubmit}>
+      </VStack>
+      <Box mt={4} maxH="300px" overflowY="scroll">
+        {messages.map((msg, index) => (
+          <HStack key={index} align="start" spacing={4} mt={2}>
+            <Avatar name={msg.role === 'user' ? 'You' : 'Assistant'} />
+            <Box
+              bg={msg.role === 'user' ? 'teal.100' : 'gray.100'}
+              p={3}
+              borderRadius="md"
+              maxW="80%"
+            >
+              <Text>{msg.content}</Text>
+            </Box>
+          </HStack>
+        ))}
+
       </Box>
+      <VStack spacing={4} mt={5} as="form" onSubmit={handleSubmit}>
+      <Input
+          placeholder="Ask a question..."
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          isDisabled={loading}
+        />
+        <Button  mt={5} type="submit" colorScheme="teal" isLoading={loading}>
+          Ask CookGPT
+        </Button>
+      </VStack>
+    </Box>
   );
 };
 
