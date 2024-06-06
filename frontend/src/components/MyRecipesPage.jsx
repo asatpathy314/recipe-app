@@ -9,9 +9,10 @@ import {
   Link,
   Text,
 } from "@chakra-ui/react";
+import ErrorPage from './ErrorPage';
 
 const MyRecipesPage = () => {
-  const { accessToken, userID } = useContext(AuthContext);
+  const { accessToken, userID, isLoggedIn } = useContext(AuthContext);
   const [recipes, setRecipes] = useState(null); // [recipe1, recipe2, recipe3, ...
   useEffect(() => {
     const fetchData = async () => {
@@ -29,7 +30,7 @@ const MyRecipesPage = () => {
         }
     fetchData();
   }, [accessToken, userID])
-  if (recipes && recipes.length > 0) {
+  if (recipes && recipes.length > 0 && isLoggedIn === "true") {
     return (
       <>
         {recipes && (
@@ -48,7 +49,7 @@ const MyRecipesPage = () => {
         )}
       </>
     );
-  } else {
+  } else if (isLoggedIn === "true") {
     return (
       <>
       <Box p={10} h="80vh" display="flex" justifyContent="center" alignItems="center">
@@ -57,6 +58,8 @@ const MyRecipesPage = () => {
       </>
     );
     
+  } else {
+    return <ErrorPage code={403} message="Unauthorized" />;
   }
 }
 
