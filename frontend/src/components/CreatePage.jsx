@@ -6,7 +6,11 @@ import {
   FormControl,
   FormLabel,
   Input,
-  Textarea,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  NumberIncrementStepper,
+  NumberDecrementStepper,
   Stack,
   Heading,
   IconButton,
@@ -25,13 +29,12 @@ import { AuthContext } from './AuthProvider';
 import TagsSearch from './TagsSearch';
 
 const CreateRecipe = () => {
-  const { accessToken } = useContext(AuthContext);
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
+  const { accessToken, email } = useContext(AuthContext);
+  const [label, setLabel] = useState('');
+  const [calories, setCalories] = useState('');
   const [ingredients, setIngredients] = useState(['']);
-  const [ingredientHeaders, setIngredientHeaders] = useState(['']);
   const [dishType, setDishType] = useState('');
-  const [cuisine, setCuisine] = useState('');
+  const [cuisineType, setCuisineType] = useState('');
   const [mealType, setMealType] = useState('');
   const [username, setUsername] = useState('');
   const [photo, setPhoto] = useState(null);
@@ -54,16 +57,6 @@ const CreateRecipe = () => {
     setIngredients(newIngredients);
   };
 
-  const handleAddHeader = () => setIngredientHeaders([...ingredientHeaders, '']);
-  const handleRemoveHeader = (index) => {
-    setIngredientHeaders(ingredientHeaders.filter((_, i) => i !== index));
-  };
-  const handleHeaderChange = (index, value) => {
-    const newHeaders = [...ingredientHeaders];
-    newHeaders[index] = value;
-    setIngredientHeaders(newHeaders);
-  };
-
   const handlePhotoUpload = (event) => {
     setPhoto(event.target.files[0]);
   };
@@ -74,36 +67,36 @@ const CreateRecipe = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log(ingredients);
+    const formattedIngredients = ingredients.map((ingredient, index) => ({ text: ingredient.trim() }));
+    console.log(formattedIngredients);
+    if (mealType === 'Lunch' || mealType === 'Dinner') {
+      console.log("hehe")
+      setMealType('lunch/dinner')
+    }
 
     const recipeData = {
-      title,
-      description,
-      ingredients,
-      ingredientHeaders,
-      dishType,
-      cuisine,
-      mealType,
-      username,
-      photo, 
+      label,
+      dishType: [dishType],
+      mealType: [mealType],
+      cuisineType: [cuisineType],
+      source: email.split('@')[0],
+      image: "",
+      calories,
+      isApproved: false,
+      isUserGenerated: true,
+      ingredients
     };
 
+    console.log(recipeData)
     try {
-      const response = await axios.post(
-        'http://localhost:8000/recipe',
-        recipeData,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
-      console.log('Recipe submitted successfully:', response.data);
+      await axios.post('http://localhost:8000/recipe', recipeData, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
     } catch (error) {
-      if (error.response) {
-        console.error('Error submitting recipe:', error.response.data);
-      } else {
-        console.error('Error submitting recipe:', error.message);
-      }
+      console.error('Error creating recipe');
     }
   };
 
@@ -117,54 +110,28 @@ const CreateRecipe = () => {
               <FormLabel>Recipe Title</FormLabel>
               <Input
                 placeholder="Give your recipe a title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
+                value={label}
+                onChange={(e) => setLabel(e.target.value)}
               />
             </FormControl>
-
-            <FormControl id="username">
-              <FormLabel>Username</FormLabel>
-              <Input
-                placeholder="Enter your username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-              />
-            </FormControl>
-
             <FormControl id="tags">
               <FormLabel>Tags</FormLabel>
               <Flex gap={3}>
                 <TagsSearch type="dish" inputState={dishType} changeInputState={setDishType} />
-                <TagsSearch type="cuisine" inputState={cuisine} changeInputState={setCuisine} />
+                <TagsSearch type="cuisine" inputState={cuisineType} changeInputState={setCuisineType} />
                 <TagsSearch type="meal" inputState={mealType} changeInputState={setMealType} />
               </Flex>
             </FormControl>
 
-            <FormControl id="description">
-              <FormLabel>Description</FormLabel>
-              <Textarea
-                placeholder="Share the story behind your recipe"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-              />
+            <FormControl id="calories">
+              <FormLabel>Calories</FormLabel>
+              <NumberInput min={0} max={15000} >
+              <NumberInputField placeholder="Enter the number of calories" value={calories} onChange={(e)=>{setCalories(e.target.value)}}/>
+            </NumberInput>
             </FormControl>
 
             <FormControl id="ingredients">
               <FormLabel>Ingredients</FormLabel>
-              {ingredientHeaders.map((header, index) => (
-                <Flex key={index} mb={2} align="center">
-                  <Input
-                    placeholder="Add a header, e.g. Cake"
-                    value={header}
-                    onChange={(e) => handleHeaderChange(index, e.target.value)}
-                    mr={2}
-                  />
-                  <IconButton
-                    icon={<MinusIcon />}
-                    onClick={() => handleRemoveHeader(index)}
-                  />
-                </Flex>
-              ))}
               {ingredients.map((ingredient, index) => (
                 <Flex key={index} mb={2} align="center">
                   <Input
@@ -182,20 +149,6 @@ const CreateRecipe = () => {
               <Button onClick={handleAddIngredient} leftIcon={<AddIcon />} mt={2}>
                 Add Ingredient
               </Button>
-              <Button onClick={handleAddHeader} leftIcon={<AddIcon />} mt={2} ml={2}>
-                Add Header
-              </Button>
-            </FormControl>
-
-            <FormControl id="photo">
-              <FormLabel>Photo (optional)</FormLabel>
-              <Input type="file" onChange={handlePhotoUpload} />
-              {photo && (
-                <Flex mt={2} align="center">
-                  <Box mr={2}>{photo.name}</Box>
-                  <Button onClick={handlePhotoDelete}>Delete Photo</Button>
-                </Flex>
-              )}
             </FormControl>
 
             <Button colorScheme="orange" type="submit" mt={4}>
@@ -226,3 +179,17 @@ const CreateRecipe = () => {
 };
 
 export default CreateRecipe;
+
+
+/*
+            <FormControl id="photo">
+              <FormLabel>Photo (optional)</FormLabel>
+              <Input type="file" onChange={handlePhotoUpload} />
+              {photo && (
+                <Flex mt={2} align="center">
+                  <Box mr={2}>{photo.name}</Box>
+                  <Button onClick={handlePhotoDelete}>Delete Photo</Button>
+                </Flex>
+              )}
+            </FormControl>
+            */

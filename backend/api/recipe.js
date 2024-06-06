@@ -71,7 +71,7 @@ router.get('/', authenticateToken, (req, res) => {
 });
 
 router.post('/', authenticateToken, async (req, res) => {
-    const newRecipe = req.body.data;
+    const newRecipe = req.body;
     let docRef;
     if (!req.body.data) {
         docRef = db.collection('recipe').doc();
