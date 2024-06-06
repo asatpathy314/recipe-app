@@ -6,33 +6,21 @@ import {
   Heading,
   IconButton,
 } from '@chakra-ui/react';
-import { FaBookmark, FaRegBookmark, FaCheckCircle, FaTimesCircle } from "react-icons/fa";
+import { FaCheckCircle, FaTimesCircle } from "react-icons/fa";
 import '../styles/recipe-preview.css'
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom'
 
 const RecipePreview = ({data, forAdmin, forMyRecipes}) => {
-  const [saved, setSaved] = useState(false);
-  const navigate = useNavigate();
-  const handleSave = () => {
-    if (saved) {
-      setSaved(false);
-    } else {
-      setSaved(true)
-    }
-  }
   const handleApprove = () => {
   }
   const handleDelete = () => {
   }
-  const handleNavigate = () => {
-    //navigate("");
-  }
-  console.log(data)
+
   return (
     <>
       {data &&
-      <Card maxW='sm' onClick={handleNavigate} className="preview-card">
+      <Card maxW='sm'className="preview-card">
         <CardBody className="preview-card-body">
           <Image
           src={data.image}
@@ -61,6 +49,17 @@ const RecipePreview = ({data, forAdmin, forMyRecipes}) => {
           forMyRecipes ? 
           <CardFooter/> :
           <CardFooter className="preview-footer">
+        </CardFooter>}
+      </Card>
+}
+    </>
+  )
+  
+}
+
+export default RecipePreview
+
+/*
             {saved ?
               <IconButton 
                 aria-label='Bookmark recipe'
@@ -77,12 +76,4 @@ const RecipePreview = ({data, forAdmin, forMyRecipes}) => {
                 onClick={handleSave}
               />
             }
-        </CardFooter>}
-      </Card>
-}
-    </>
-  )
-  
-}
-
-export default RecipePreview
+            */

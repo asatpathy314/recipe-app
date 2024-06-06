@@ -8,21 +8,21 @@ import '../styles/discover-page.css'
 
 const DiscoverPage = () => {
     const { accessToken } = useContext(AuthContext);
-    const [user, setUser] = useState('');
+    const [query, setQuery] = useState('');
+    const [userMade, setUserMade] = useState('');
     const [isSearch, setIsSearch] = useState(false);
     const [recipes, setRecipes] = useState(null); // [recipe1, recipe2, recipe3, ...
     const [meal, setMeal] = useState('');
     const [cuisine, setCuisine] = useState('');
     const [dish, setDish] = useState('');
+   
     const extractID = (url) => {
         // Extract the part after the hash (#)
         const id = url.split('#recipe_')[1];
-        console.log(id); // Output: 9f205a876e184d3abd5965451d94931e
         return id;
     }
 
     useEffect(() => {
-        console.log('we ball')
         const fetchData = async () => {
             if (! isSearch ) {
                 try {
@@ -39,8 +39,22 @@ const DiscoverPage = () => {
         }
         fetchData()
     }, [isSearch, accessToken])
-    const handleSubmit = () => {
-
+    const handleSubmit = async () => {
+        const fetchSearch = async () => {
+            try {
+                const response = await axios.get(`http://localhost:8000/recipe?q=${query}&mealType=${meal}&cuisineType=${cuisine}&dishType=${dish}`, {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`
+                    }
+                });
+                setRecipes(response.data);
+                setIsSearch(true);
+            } catch (error) {
+                console.error(error)
+            }
+        }
+        console.log(recipes);
+        fetchSearch();
     }
 
     return (
@@ -53,11 +67,13 @@ const DiscoverPage = () => {
                             placeholder='Search'
                             style={{marginBottom:"15px"}}
                             _hover={{backgroundColor:"rgb(231, 231, 231)"}}
+                            onChange={(e) => setQuery(e.target.value)}
+                            value={query}
                         />
                         <SimpleGrid 
                         columns={{ sm: 1, md:2, lg:4}}
                         spacing={4}>
-                            <TagsSearch type="user" inputState={user} changeInputState={setUser}/>
+                            <TagsSearch type="user" inputState={userMade} changeInputState={setUserMade}/>
                             <TagsSearch type="meal" inputState={meal} changeInputState={setMeal}/>
                             <TagsSearch type="cuisine" inputState={cuisine} changeInputState={setCuisine}/>
                             <TagsSearch type="dish" inputState={dish} changeInputState={setDish}/>

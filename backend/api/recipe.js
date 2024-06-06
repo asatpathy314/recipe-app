@@ -9,12 +9,16 @@ const baseURL = 'https://api.edamam.com/api/recipes/v2'; // can add /{id} to get
 const router = express.Router();
 
 router.get('/', authenticateToken, (req, res) => {
+    console.log('3.14159265')
     const query = req.query.q;
-    const edamam_type = 'public'; // public or private recipes
     const dishType = req.query.dishType;
     const cuisineType = req.query.cuisineType;
     const mealType = req.query.mealType;
     
+    if (!dishType && !cuisineType && !mealType && !query) {
+        return res.status(400).json({ message: 'Invalid query' });
+    }
+
     const fields = [
         'image',
         'images',
@@ -28,26 +32,35 @@ router.get('/', authenticateToken, (req, res) => {
         app_id: process.env.APP_ID,
         app_key: process.env.APP_KEY,
         type: 'public',
-        cuisineType: cuisineType,
-        mealType: mealType,
-        dishType: dishType,
         field: fields,
         },
         paramsSerializer: {
             indexes: null,
         }
     };
-
-    if (!dishType && !cuisineType && !mealType && !query) {
-        return res.status(400).json({ message: 'Invalid query' });
+    if (dishType) {
+        params.params.dishType = dishType;
     }
+    if(cuisineType) {
+        params.params.cuisineType = cuisineType;
+    }
+    if(mealType) {
+        params.params.mealType = mealType;
+    }
+    if(query) {
+        params.params.q = query;
+    }
+
+
     try {
         axios.get(`${baseURL}/`, params)
             .then((response) => {
-                res.status(200).json(response.data);
+                const formattedRecipes = response.data.hits.map((recipe) => recipe.recipe);
+                res.status(200).json(formattedRecipes);
             })
             .catch((error) => {
                 console.error(error.message);
+                console.error(error);
                 res.status(500).json({ message: 'Internal Server Error' });
         });
     }
@@ -70,7 +83,6 @@ router.post('/', authenticateToken, async (req, res) => {
         await docRef.set(newRecipe, {merge: true})
         res.status(200).json({ message: 'Recipe added successfully' });
     } catch (error) {
-        console.log(error);
         console.log(error.message);
         res.status(500).json({ message: 'Internal Server Error' });
     }
@@ -119,6 +131,7 @@ router.get('/random', authenticateToken, (req, res) => {
 });
 
 router.get('/:id', authenticateToken, async (req, res, next) => {
+    console.log('3.14159265')
     const recipeId = req.params.id;
     const fieldsInitial = ['image', 'images'];
     const fieldsFinal = [
