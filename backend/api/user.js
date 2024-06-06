@@ -136,7 +136,7 @@ router.get('/saved', authenticateToken, async (req, res) => {
                 }
                 res.status(200).json({ recipes: recipes.filter(recipe => recipe !== null) });
             } else {
-                res.status(404).send('User not found');
+                res.status(200).send({ recipes: []});
             }
         });
     } catch (error) {

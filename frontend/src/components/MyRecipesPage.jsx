@@ -7,6 +7,7 @@ import {
   Box,
   Heading,
   Link,
+  Text,
 } from "@chakra-ui/react";
 
 const MyRecipesPage = () => {
@@ -28,24 +29,35 @@ const MyRecipesPage = () => {
         }
     fetchData();
   }, [accessToken, userID])
-  return (
-    <>
-      {recipes && (
-        <Box p={10}>
-          <Heading mb={6}>Saved Recipes</Heading>
-          <SimpleGrid columns={{ base: 1, sm: 2, md: 3, lg: 4 }} spacing={5}>
-            {recipes.map((recipe, idx) => {
-              return (
-              <Link key={idx} href={`/recipe/${recipe.id}`}>
-                <RecipePreview data={recipe} forMyRecipes={true} />
-              </Link>
-            );
-            })}
-          </SimpleGrid>
-        </Box>
-      )}
-    </>
-  );
+  if (recipes && recipes.length > 0) {
+    return (
+      <>
+        {recipes && (
+          <Box p={10}>
+            <Heading mb={6}>Saved Recipes</Heading>
+            <SimpleGrid columns={{ base: 1, sm: 2, md: 3, lg: 4 }} spacing={5}>
+              {recipes.map((recipe, idx) => {
+                return (
+                <Link key={idx} href={`/recipe/${recipe.id}`}>
+                  <RecipePreview data={recipe} forMyRecipes={true} />
+                </Link>
+              );
+              })}
+            </SimpleGrid>
+          </Box>
+        )}
+      </>
+    );
+  } else {
+    return (
+      <>
+      <Box p={10} h="80vh" display="flex" justifyContent="center" alignItems="center">
+        <Heading textAlign="center" size="lg">Check out the <Link href="/discover" textDecoration="underline" color='orange.400'>Discover</Link> page to save your first recipe!</Heading>
+      </Box>
+      </>
+    );
+    
+  }
 }
 
 export default MyRecipesPage;
