@@ -29,9 +29,15 @@ export default function RegisterPage() {
   const handleSubmit = () => {
     if (inputPassword !== confirmPassword) {
       setInputErrorCode(2);
+      return;
     }
     if (!inputEmail.includes("@")) {
       setInputErrorCode(1);
+      return;
+    }
+    if(inputPassword.length < 6){
+      setInputErrorCode(4);
+      return;
     }
     createUserWithEmailAndPassword(auth, inputEmail, inputPassword)
       .then((userCredential) => {
@@ -93,6 +99,8 @@ export default function RegisterPage() {
           <FormControl
             id="inputPassword"
             value={inputPassword}
+            minLength={6}
+            isInvalid={inputErrorCode === 2 || inputErrorCode === 4}
             onChange={(e) => {
               setPassword(e.target.value);
             }}
@@ -105,7 +113,8 @@ export default function RegisterPage() {
             id="confirmPassword"
             isRequired
             value={confirmPassword}
-            isInvalid={inputErrorCode === 2}
+            minLength={6}
+            isInvalid={inputErrorCode === 2 || inputErrorCode === 4}
             onChange={(e) => {
               setConfirmPassword(e.target.value);
             }}
@@ -115,6 +124,11 @@ export default function RegisterPage() {
             {inputErrorCode === 2 && (
               <FormErrorMessage>
                 Does not match entered password.
+              </FormErrorMessage>
+            )}
+            {inputErrorCode === 4 && (
+              <FormErrorMessage>
+                Password must be at least 6 characters.
               </FormErrorMessage>
             )}
           </FormControl>

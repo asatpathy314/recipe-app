@@ -233,7 +233,7 @@ const CreateRecipe = () => {
             </ModalBody>
             <ModalFooter>
               <Button
-                colorScheme="blue"
+                bg="#ff8e3c"
                 mr={3}
                 onClick={() => {
                   navigate("/");
