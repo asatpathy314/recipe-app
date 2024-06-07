@@ -123,7 +123,7 @@ export default function Navbar() {
               Sign In
             </Button>
           ) : (
-            <Button fontSize={"sm"} fontWeight={400} onClick={logout}>
+            <Button fontSize={"sm"} bg="transparent" fontWeight={400} onClick={logout}>
               Sign Out
             </Button>
           )}

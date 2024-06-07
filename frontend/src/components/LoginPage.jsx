@@ -98,7 +98,9 @@ export default function RegisterPage() {
               <FormErrorMessage>Incorrect Email or Password</FormErrorMessage>
             )}
           </FormControl>
-          <Button bg="#ff8e3c" variant={"solid"} onClick={handleSubmit}>
+          <Button bg="#ff8e3c" color="white" variant={"solid"} onClick={handleSubmit} _hover={{
+              bg: "#ff9d56",
+            }}>
             Sign In
           </Button>
         </Stack>

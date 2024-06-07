@@ -84,9 +84,11 @@ export default function CallToActionWithVideo() {
               size={"lg"}
               fontWeight={"normal"}
               px={6}
-              colorScheme={"red"}
-              bg={"orange.400"}
-              _hover={{ bg: "gray.500" }}
+              color="white"
+              bg={"#ff8e3c"}
+              _hover={{
+                bg: "#ff9d56",
+              }}
               onClick={handleButtonClick}
             >
               {isLoggedIn ? "Discover" : "Sign up"}

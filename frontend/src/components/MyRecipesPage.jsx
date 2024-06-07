@@ -70,8 +70,8 @@ const MyRecipesPage = () => {
     <Box p={10}>
       <Tabs>
         <TabList>
-          <Tab>Saved Recipes</Tab>
-          <Tab>My Recipes</Tab>
+          <Tab _selected={{color: "#ff8e3c"}}>Saved Recipes</Tab>
+          <Tab _selected={{color: "#ff8e3c"}}>My Recipes</Tab>
         </TabList>
 
         <TabPanels>

@@ -81,7 +81,7 @@ const Chatbot = () => {
           onChange={(e) => setInput(e.target.value)}
           isDisabled={loading}
         />
-        <Button mt={5} type="submit" colorScheme="teal" isLoading={loading}>
+        <Button mt={5} type="submit" bg="#ff8e3c" color="white" isLoading={loading}>
           Ask CookGPT
         </Button>
       </VStack>

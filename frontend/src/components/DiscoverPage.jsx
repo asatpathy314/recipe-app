@@ -86,6 +86,7 @@ const DiscoverPage = () => {
           <form>
             <Input
               placeholder="Search"
+              maxLength={150}
               style={{ marginBottom: "15px" }}
               _hover={{ backgroundColor: "rgb(231, 231, 231)" }}
               onChange={(e) => setQuery(e.target.value)}

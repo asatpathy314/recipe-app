@@ -10,7 +10,7 @@ import {
   Image,
   Flex,
   VStack,
-  Button,
+  HStack,
   Heading,
   SimpleGrid,
   StackDivider,
@@ -19,6 +19,7 @@ import {
   IconButton,
 } from "@chakra-ui/react";
 import { CheckIcon, DeleteIcon } from "@chakra-ui/icons";
+import { FaBookmark, FaRegBookmark } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "./AuthProvider";
 import Chatbot from "./Chatbot";
@@ -195,12 +196,6 @@ const RecipeDetailPage = ({ match }) => {
       <Container maxW={"7xl"} p={10}>
         <Flex justifyContent="flex-end" mb={4}>
           <Stack gap={2} direction="row">
-            {isApproved &&
-              (isSaved ? (
-                <Button onClick={handleUnsave}>Unsave</Button>
-              ) : (
-                <Button onClick={handleSave}>Save</Button>
-              ))}
             {!isApproved && (
               <>
                 <IconButton
@@ -255,7 +250,9 @@ const RecipeDetailPage = ({ match }) => {
                 <Text fontWeight={300} fontSize={"2xl"}>
                   {Math.round(recipe.calories) + " calories"}
                 </Text>
-                <AverageRating avg={averageRating} numComments={recipe.comments.length}/>
+                {averageRating
+                ? <AverageRating avg={averageRating} numComments={recipe.comments.length}/>
+                : <AverageRating avg={0} numComments={recipe.comments.length}/>}
               </Box>
 
               <Stack
@@ -263,11 +260,27 @@ const RecipeDetailPage = ({ match }) => {
                 direction={"column"}
                 divider={<StackDivider />}
               >
-                <VStack spacing={{ base: 4, sm: 6 }}>
+                <HStack justifyContent={"space-between"}>
                   <Text fontSize={"2xl"} fontWeight={"300"}>
                     {"Author: " + recipe.source}
                   </Text>
-                </VStack>
+                  {isApproved &&
+                    (isSaved ? (
+                      <IconButton
+                        onClick={handleUnsave}
+                        icon={<FaBookmark color="#ff8e3c"/>}
+                        bg="transparent"
+                        size='lg'
+                        />
+                    ) : (
+                      <IconButton
+                          onClick={handleSave}
+                          icon={<FaRegBookmark color="#ff8e3c"/>}
+                          bg="transparent"
+                          size='lg'
+                          />
+                      ))}
+                </HStack>
                 <Box gap={5}>
                   <Text
                     fontSize={{ base: "16px", lg: "18px" }}
