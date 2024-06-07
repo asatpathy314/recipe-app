@@ -12,7 +12,7 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import CommentForm from "./CommentForm"; // Adjust the import path as necessary
 
-const Replies = ({ replies, setAverageRating, findAvg }) => {
+const Replies = ({ replies, setAverageRating, findAvg, setNumComments }) => {
   const [localReplies, setLocalReplies] = useState(replies);
   const { id } = useParams();
 
@@ -23,7 +23,8 @@ const Replies = ({ replies, setAverageRating, findAvg }) => {
     setLocalReplies(localReplies.filter((reply) => reply.id !== commentID));
   };
   useEffect(()=>{
-    setAverageRating(findAvg(localReplies))
+    setAverageRating(findAvg(localReplies));
+    setNumComments(localReplies.length);
   },[localReplies])
   const addReply = (commentId, newReply) => {
     setLocalReplies((prevComments) =>
