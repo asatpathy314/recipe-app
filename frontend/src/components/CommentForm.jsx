@@ -57,9 +57,9 @@ const CommentForm = ({ addComment }) => {
   return (
     <Box as="form" mt={4} onSubmit={handleCommentSubmit}>
       <FormControl isRequired mt={4}>
-          <FormLabel>Add a rating</FormLabel>
-          <Ratings rating={rating} setRating={setRating}/>
-      </FormControl>
+        <FormLabel>Add a rating</FormLabel>
+        <Ratings rating={rating} setRating={setRating}/>
+    </FormControl>
       <FormControl isRequired mt={4}>
         <FormLabel>Add a comment</FormLabel>
         <Textarea

@@ -60,7 +60,7 @@ const RecipeDetailPage = ({ match }) => {
         setRecipe(response.data);
         setIsApproved(response.data.isApproved);
         setIsCreatedByUser(response.data.source === email.split("@")[0]);
-        setAverageRating(findAvg(response.data.comments));
+        response.data.comments.length && setAverageRating(findAvg(response.data.comments));
       } catch (error) {
         console.error("Error fetching recipe");
         console.error(error);
