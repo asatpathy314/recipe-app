@@ -91,7 +91,7 @@ const ReplyCard = ({
       </CardHeader>
       <CardBody pt={2} pb={0}>
         <Stack>
-          <Ratings submittedRating={rating}/>
+          {isComment && <Ratings submittedRating={rating}/>}
           <Text>{content}</Text>
           {showReplyForm && isComment && (
             <Box mt={0} ml={4}>
