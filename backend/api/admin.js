@@ -6,28 +6,29 @@ const { db } = require('../firebaseAdmin');
 dotenv.config();
 const router = express.Router();
 
+// Approve a user recipe
 router.post('/approve', authenticateToken, async (req, res) => {
-    console.log('huh')
     const docRef = db.collection('recipe').doc(req.query.id);
-    try { 
+    try {
         await docRef.update({
             isApproved: true
         })
-        res.status(200).json({message: "Recipe approved"});
+        res.status(200).json({ message: "Recipe approved" });
     } catch (error) {
         console.error(error);
-        res.status(500).json({message: "Internal server error."})
+        res.status(500).json({ message: "Internal server error." })
     }
 });
 
+// Delete a recipe
 router.post('/delete', authenticateToken, async (req, res) => {
     const docRef = db.collection('recipe').doc(req.query.id);
-    try { 
+    try {
         await docRef.delete()
-        res.status(200).json({message: "Recipe deleted"});
+        res.status(200).json({ message: "Recipe deleted" });
     } catch (error) {
         console.error(error);
-        res.status(500).json({message: "Internal server error."})
+        res.status(500).json({ message: "Internal server error." })
     }
 });
 

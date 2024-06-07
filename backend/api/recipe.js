@@ -9,8 +9,7 @@ const baseURL = 'https://api.edamam.com/api/recipes/v2'; // can add /{id} to get
 const router = express.Router();
 
 
-
-
+// Query database/API for recipes. Mostly used on the discussion page.
 router.get('/', authenticateToken, (req, res) => {
     const query = req.query.q;
     const dishType = req.query.dishType;
@@ -39,7 +38,7 @@ router.get('/', authenticateToken, (req, res) => {
             });
         return;
     }
-    
+
     if (!dishType && !cuisineType && !mealType && !query) {
         return res.status(400).json({ message: 'Invalid query' });
     }
@@ -50,14 +49,14 @@ router.get('/', authenticateToken, (req, res) => {
         'uri',
         'label',
     ];
-    
+
     const params = {
         params: {
-        q: query,
-        app_id: process.env.APP_ID,
-        app_key: process.env.APP_KEY,
-        type: 'public',
-        field: fields,
+            q: query,
+            app_id: process.env.APP_ID,
+            app_key: process.env.APP_KEY,
+            type: 'public',
+            field: fields,
         },
         paramsSerializer: {
             indexes: null,
@@ -66,17 +65,15 @@ router.get('/', authenticateToken, (req, res) => {
     if (dishType) {
         params.params.dishType = dishType;
     }
-    if(cuisineType) {
+    if (cuisineType) {
         params.params.cuisineType = cuisineType;
     }
-    if(mealType) {
+    if (mealType) {
         params.params.mealType = mealType;
     }
-    if(query) {
+    if (query) {
         params.params.q = query;
     }
-
-
     try {
         axios.get(`${baseURL}/`, params)
             .then((response) => {
@@ -87,7 +84,7 @@ router.get('/', authenticateToken, (req, res) => {
                 console.error(error.message);
                 console.error(error);
                 res.status(500).json({ message: 'Internal Server Error' });
-        });
+            });
     }
     catch (error) {
         console.error(error.message);
@@ -95,6 +92,8 @@ router.get('/', authenticateToken, (req, res) => {
     }
 });
 
+
+// Add a new recipe to the database
 router.post('/', authenticateToken, async (req, res) => {
     const newRecipe = req.body;
     let docRef;
@@ -105,7 +104,7 @@ router.post('/', authenticateToken, async (req, res) => {
         docRef = db.collection('recipe').doc(req.body.data.id);
     }
     try {
-        await docRef.set(newRecipe, {merge: true})
+        await docRef.set(newRecipe, { merge: true })
         res.status(200).json({ message: 'Recipe added successfully' });
     } catch (error) {
         console.log(error.message);
@@ -113,24 +112,26 @@ router.post('/', authenticateToken, async (req, res) => {
     }
 });
 
+
+// Get 20 random recipes from the API
 router.get('/random', authenticateToken, (req, res) => {
     const edamam_type = 'public'; // public or private recipes
     const query = String.fromCharCode(97 + Math.floor(Math.random() * 26));
-    
+
     const fields = [
         'image',
         'images',
         'uri',
         'label',
     ];
-    
+
     const params = {
         params: {
-        q: query,
-        app_id: process.env.APP_ID,
-        app_key: process.env.APP_KEY,
-        type: 'public',
-        field: fields,
+            q: query,
+            app_id: process.env.APP_ID,
+            app_key: process.env.APP_KEY,
+            type: 'public',
+            field: fields,
         },
         paramsSerializer: {
             indexes: null,
@@ -147,7 +148,7 @@ router.get('/random', authenticateToken, (req, res) => {
                 console.error(error.message);
                 console.error(error)
                 res.status(500).json({ message: 'Internal Server Error' });
-        });
+            });
     }
     catch (error) {
         console.error(error.message);
@@ -155,19 +156,23 @@ router.get('/random', authenticateToken, (req, res) => {
     }
 });
 
+
+// Get all user-created recipes that have not been approved
 router.get("/unapproved", authenticateToken, async (req, res) => {
     const recipes = [];
     const snapshot = await db.collection('recipe').where('isApproved', '==', false).get();
     snapshot.forEach((doc) => {
         recipes.push(
-            {   
+            {
                 ...doc.data(),
-                id: doc.id,            
+                id: doc.id,
             });
     });
     res.status(200).json(recipes);
 });
 
+
+// Get a recipe by ID
 router.get('/getByID/:id', authenticateToken, async (req, res, next) => {
     const recipeId = req.params.id;
     const fieldsInitial = ['image', 'images'];
@@ -206,6 +211,7 @@ router.get('/getByID/:id', authenticateToken, async (req, res, next) => {
         const recipeDoc = await docRef.get();
 
         if (recipeDoc.exists) {
+            // Refresh the recipe image if it is not user-generated
             const recipeData = recipeDoc.data();
             if (!recipeData.isUserGenerated) {
                 const newResponse = await axios.get(`${baseURL}/${recipeId}`, optionsInitial);
@@ -237,23 +243,30 @@ router.get('/getByID/:id', authenticateToken, async (req, res, next) => {
 
             res.status(200).json(recipeData);
         } else {
-            const response = await axios.get(`${baseURL}/${recipeId}`, optionsFinal);
-            const newRecipe = {
-                ...response.data.recipe,
-                isUserGenerated: false,
-                isApproved: true,
-                comments: [],
-            };
+            try {
+                // Add the recipe to the database if its not there already
+                const response = await axios.get(`${baseURL}/${recipeId}`, optionsFinal);
+                const newRecipe = {
+                    ...response.data.recipe,
+                    isUserGenerated: false,
+                    isApproved: true,
+                    comments: [],
+                };
 
-            res.status(200).json(newRecipe);
+                res.status(200).json(newRecipe);
 
-            const dbRecipe = {
-                ...response.data.recipe,
-                isUserGenerated: false,
-                isApproved: true,
-            };
+                const dbRecipe = {
+                    ...response.data.recipe,
+                    isUserGenerated: false,
+                    isApproved: true,
+                };
 
-            await db.collection('recipe').doc(recipeId).set(dbRecipe, { merge: true });
+                await db.collection('recipe').doc(recipeId).set(dbRecipe, { merge: true });
+            } catch (error) {
+                // Recipe likely doesn't exist
+                console.error(error.message);
+                res.status(500).json({ message: 'Internal Server Error' });
+            }
         }
     } catch (error) {
         console.error(error);

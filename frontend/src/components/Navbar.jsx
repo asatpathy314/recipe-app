@@ -41,15 +41,22 @@ const getNavItems = ({ isAdmin, isLoggedIn }) => {
 export default function Navbar() {
   const navigate = useNavigate();
   const { isOpen, onToggle } = useDisclosure();
-  const { email, isLoggedIn, setEmail, setUserID, setAccessToken, setIsLoggedIn } = useContext(AuthContext);
-  
+  const {
+    email,
+    isLoggedIn,
+    setEmail,
+    setUserID,
+    setAccessToken,
+    setIsLoggedIn,
+  } = useContext(AuthContext);
+
   const logout = () => {
     localStorage.clear();
-    setEmail('');
-    setUserID('');
-    setAccessToken('');
+    setEmail("");
+    setUserID("");
+    setAccessToken("");
     setIsLoggedIn(false);
-    navigate('/');
+    navigate("/");
   };
 
   const [admin, setAdmin] = useState(false);
@@ -77,7 +84,9 @@ export default function Navbar() {
         >
           <IconButton
             onClick={onToggle}
-            icon={isOpen ? <CloseIcon w={3} h={3} /> : <HamburgerIcon w={5} h={5} />}
+            icon={
+              isOpen ? <CloseIcon w={3} h={3} /> : <HamburgerIcon w={5} h={5} />
+            }
             variant={"ghost"}
             aria-label={"Toggle Navigation"}
           />
@@ -114,11 +123,7 @@ export default function Navbar() {
               Sign In
             </Button>
           ) : (
-            <Button
-              fontSize={"sm"}
-              fontWeight={400}
-              onClick={logout}
-            >
+            <Button fontSize={"sm"} fontWeight={400} onClick={logout}>
               Sign Out
             </Button>
           )}

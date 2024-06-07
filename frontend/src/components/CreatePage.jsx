@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext } from "react";
 import {
   Box,
   Button,
@@ -19,38 +19,38 @@ import {
   ModalBody,
   ModalFooter,
   useDisclosure,
-} from '@chakra-ui/react';
-import { AddIcon, MinusIcon } from '@chakra-ui/icons';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom'; 
-import { AuthContext } from './AuthProvider';
-import TagsSearch from './TagsSearch';
-import ErrorPage from './ErrorPage';
+} from "@chakra-ui/react";
+import { AddIcon, MinusIcon } from "@chakra-ui/icons";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "./AuthProvider";
+import TagsSearch from "./TagsSearch";
+import ErrorPage from "./ErrorPage";
 
 const CreateRecipe = () => {
   const navigate = useNavigate();
   const { accessToken, email, isLoggedIn } = useContext(AuthContext);
-  const [label, setLabel] = useState('');
-  const [calories, setCalories] = useState('');
-  const [ingredients, setIngredients] = useState(['']);
-  const [dishType, setDishType] = useState('');
-  const [cuisineType, setCuisineType] = useState('');
-  const [mealType, setMealType] = useState('');
+  const [label, setLabel] = useState("");
+  const [calories, setCalories] = useState("");
+  const [ingredients, setIngredients] = useState([""]);
+  const [dishType, setDishType] = useState("");
+  const [cuisineType, setCuisineType] = useState("");
+  const [mealType, setMealType] = useState("");
   const [ingredientToDelete, setIngredientToDelete] = useState(null);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
     isOpen: isSuccessOpen,
     onOpen: onSuccessOpen,
-    onClose: onSuccessClose
+    onClose: onSuccessClose,
   } = useDisclosure();
   const {
     isOpen: isErrorOpen,
     onOpen: onErrorOpen,
-    onClose: onErrorClose
+    onClose: onErrorClose,
   } = useDisclosure();
 
-  const handleAddIngredient = () => setIngredients([...ingredients, '']);
+  const handleAddIngredient = () => setIngredients([...ingredients, ""]);
   const handleRemoveIngredient = (index) => {
     setIngredientToDelete(index);
     onOpen();
@@ -65,28 +65,25 @@ const CreateRecipe = () => {
     setIngredients(newIngredients);
   };
 
-  const handlePhotoUpload = (event) => {
-    setPhoto(event.target.files[0]);
-  };
-
-  const handlePhotoDelete = () => {
-    setPhoto(null);
-  };
-  console.log(isLoggedIn)
+  console.log(isLoggedIn);
   if (isLoggedIn === "false") {
-    return (
-        <ErrorPage code={403} message="Forbidden" />
-    )
+    return <ErrorPage code={403} message="Forbidden" />;
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!label || !calories || ingredients.every(ingredient => !ingredient.trim())) {
+    if (
+      !label ||
+      !calories ||
+      ingredients.every((ingredient) => !ingredient.trim())
+    ) {
       onErrorOpen();
       return;
     }
 
-    const formattedIngredients = ingredients.map((ingredient) => ({ text: ingredient.trim() }));
+    const formattedIngredients = ingredients.map((ingredient) => ({
+      text: ingredient.trim(),
+    }));
 
     if (calories < 0) {
       setCalories(0);
@@ -96,8 +93,8 @@ const CreateRecipe = () => {
       setCalories(15000);
     }
 
-    if (mealType === 'Lunch' || mealType === 'Dinner') {
-      setMealType('lunch/dinner');
+    if (mealType === "Lunch" || mealType === "Dinner") {
+      setMealType("lunch/dinner");
     }
 
     const recipeData = {
@@ -105,23 +102,23 @@ const CreateRecipe = () => {
       dishType: dishType ? [dishType] : [],
       mealType: mealType ? [mealType] : [],
       cuisineType: cuisineType ? [cuisineType] : [],
-      source: email.split('@')[0],
+      source: email.split("@")[0],
       image: "",
       calories,
       isApproved: false,
       isUserGenerated: true,
-      ingredients: formattedIngredients
+      ingredients: formattedIngredients,
     };
 
     try {
-      await axios.post('http://localhost:8000/recipe', recipeData, {
+      await axios.post("http://localhost:8000/recipe", recipeData, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
       });
       onSuccessOpen();
     } catch (error) {
-      console.error('Error creating recipe');
+      console.error("Error creating recipe");
     }
   };
 
@@ -142,16 +139,34 @@ const CreateRecipe = () => {
             <FormControl id="tags">
               <FormLabel>Tags</FormLabel>
               <Flex gap={3}>
-                <TagsSearch type="dish" inputState={dishType} changeInputState={setDishType} />
-                <TagsSearch type="cuisine" inputState={cuisineType} changeInputState={setCuisineType} />
-                <TagsSearch type="meal" inputState={mealType} changeInputState={setMealType} />
+                <TagsSearch
+                  type="dish"
+                  inputState={dishType}
+                  changeInputState={setDishType}
+                />
+                <TagsSearch
+                  type="cuisine"
+                  inputState={cuisineType}
+                  changeInputState={setCuisineType}
+                />
+                <TagsSearch
+                  type="meal"
+                  inputState={mealType}
+                  changeInputState={setMealType}
+                />
               </Flex>
             </FormControl>
 
             <FormControl id="calories">
               <FormLabel>Calories</FormLabel>
               <NumberInput min={0} max={15000}>
-                <NumberInputField placeholder="Enter the number of calories" value={calories} onChange={(e) => { setCalories(e.target.value) }} />
+                <NumberInputField
+                  placeholder="Enter the number of calories"
+                  value={calories}
+                  onChange={(e) => {
+                    setCalories(e.target.value);
+                  }}
+                />
               </NumberInput>
             </FormControl>
 
@@ -162,7 +177,9 @@ const CreateRecipe = () => {
                   <Input
                     placeholder="e.g. 1 cup sugar"
                     value={ingredient}
-                    onChange={(e) => handleIngredientChange(index, e.target.value)}
+                    onChange={(e) =>
+                      handleIngredientChange(index, e.target.value)
+                    }
                     mr={2}
                   />
                   <IconButton
@@ -171,7 +188,11 @@ const CreateRecipe = () => {
                   />
                 </Flex>
               ))}
-              <Button onClick={handleAddIngredient} leftIcon={<AddIcon />} mt={2}>
+              <Button
+                onClick={handleAddIngredient}
+                leftIcon={<AddIcon />}
+                mt={2}
+              >
                 Add Ingredient
               </Button>
             </FormControl>
@@ -194,7 +215,9 @@ const CreateRecipe = () => {
               <Button colorScheme="blue" mr={3} onClick={onClose}>
                 Cancel
               </Button>
-              <Button colorScheme="red" onClick={confirmRemoveIngredient}>Delete</Button>
+              <Button colorScheme="red" onClick={confirmRemoveIngredient}>
+                Delete
+              </Button>
             </ModalFooter>
           </ModalContent>
         </Modal>
@@ -205,10 +228,17 @@ const CreateRecipe = () => {
             <ModalHeader>Success!</ModalHeader>
             <ModalCloseButton />
             <ModalBody>
-              Congrats, you submitted a recipe! Pending admin review to be officially uploaded.
+              Congrats, you submitted a recipe! Pending admin review to be
+              officially uploaded.
             </ModalBody>
             <ModalFooter>
-              <Button colorScheme="blue" mr={3} onClick={() => {navigate('/')}}>
+              <Button
+                colorScheme="blue"
+                mr={3}
+                onClick={() => {
+                  navigate("/");
+                }}
+              >
                 Close
               </Button>
             </ModalFooter>

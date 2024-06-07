@@ -1,5 +1,5 @@
 const express = require('express');
-const authenticateToken  = require('../middleware/authenticateToken');
+const authenticateToken = require('../middleware/authenticateToken');
 const axios = require('axios');
 const dotenv = require('dotenv')
 dotenv.config();
@@ -34,7 +34,7 @@ In order to use the API route send
 */
 
 router.post('/', authenticateToken, async (req, res) => {
-    const assistantContext = [{"role": "system", "content": "You are a helpful assistant. You are here to help the user with cooking. Do not answer questions unrelated to cooking."}]
+    const assistantContext = [{ "role": "system", "content": "You are a helpful assistant. You are here to help the user with cooking. Do not answer questions unrelated to cooking." }]
     const context = assistantContext.concat(req.body.messages);
     try {
         const completion = await openai.chat.completions.create({

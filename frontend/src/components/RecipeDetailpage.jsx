@@ -33,9 +33,6 @@ const RecipeDetailPage = ({ match }) => {
   const [isSaved, setIsSaved] = useState(false);
   const [isApproved, setIsApproved] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [comments, setComments] = useState([]);
-  const [newComment, setNewComment] = useState("");
-
   const [isCreatedByUser, setIsCreatedByUser] = useState(false);
 
   useEffect(() => {
@@ -51,7 +48,7 @@ const RecipeDetailPage = ({ match }) => {
         );
         setRecipe(response.data);
         setIsApproved(response.data.isApproved);
-        setIsCreatedByUser(response.data.source === email.split('@')[0]);
+        setIsCreatedByUser(response.data.source === email.split("@")[0]);
       } catch (error) {
         console.error("Error fetching recipe");
         console.error(error);
@@ -123,7 +120,8 @@ const RecipeDetailPage = ({ match }) => {
   const handleDelete = async () => {
     try {
       await axios.post(
-        `http://localhost:8000/admin/delete?id=${id}`, {},
+        `http://localhost:8000/admin/delete?id=${id}`,
+        {},
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -131,17 +129,18 @@ const RecipeDetailPage = ({ match }) => {
         }
       );
       navigate("/admin");
-      navigate(0)
+      navigate(0);
     } catch (error) {
       console.error("Error deleting recipe");
       console.error(error);
     }
   };
-  
+
   const handleMyDelete = async () => {
     try {
       await axios.post(
-        `http://localhost:8000/admin/delete?id=${id}`, {},
+        `http://localhost:8000/admin/delete?id=${id}`,
+        {},
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -156,17 +155,18 @@ const RecipeDetailPage = ({ match }) => {
     }
   };
 
-  const handleApprove = async () => { 
+  const handleApprove = async () => {
     try {
       await axios.post(
-        `http://localhost:8000/admin/approve?id=${id}`, {},
+        `http://localhost:8000/admin/approve?id=${id}`,
+        {},
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
         }
       );
-      navigate('/admin');
+      navigate("/admin");
       navigate(0);
     } catch (error) {
       console.error("Error approving recipe");
@@ -183,35 +183,34 @@ const RecipeDetailPage = ({ match }) => {
       <Container maxW={"7xl"} p={10}>
         <Flex justifyContent="flex-end" mb={4}>
           <Stack gap={2} direction="row">
-          {isApproved && (
-            isSaved ? (
-              <Button onClick={handleUnsave}>Unsave</Button>
-            ) : (
-              <Button onClick={handleSave}>Save</Button>
-            )
-          )}
-          {!isApproved && 
-            <>
-              <IconButton
-                icon={<CheckIcon />}
-                aria-label="Approve"
-                onClick={handleApprove}
-                mr={2}
-              />
+            {isApproved &&
+              (isSaved ? (
+                <Button onClick={handleUnsave}>Unsave</Button>
+              ) : (
+                <Button onClick={handleSave}>Save</Button>
+              ))}
+            {!isApproved && (
+              <>
+                <IconButton
+                  icon={<CheckIcon />}
+                  aria-label="Approve"
+                  onClick={handleApprove}
+                  mr={2}
+                />
+                <IconButton
+                  icon={<DeleteIcon />}
+                  aria-label="Delete"
+                  onClick={handleDelete}
+                />
+              </>
+            )}
+            {isCreatedByUser && isApproved && (
               <IconButton
                 icon={<DeleteIcon />}
                 aria-label="Delete"
-                onClick={handleDelete}
+                onClick={handleMyDelete}
               />
-            </>
-          }
-          {isCreatedByUser && isApproved && (
-            <IconButton
-              icon={<DeleteIcon />}
-              aria-label="Delete"
-              onClick={handleMyDelete}
-            />
-          )}
+            )}
           </Stack>
         </Flex>
         {recipe && (

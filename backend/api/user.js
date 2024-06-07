@@ -8,7 +8,6 @@ dotenv.config();
 const router = express.Router();
 const baseURL = 'https://api.edamam.com/api/recipes/v2'; // can add /{id} to get a specific recipe by id
 
-
 // Save a recipe to a user's saved recipes
 router.post('/save', authenticateToken, async (req, res) => {
     const userId = req.query.userid;
@@ -70,6 +69,7 @@ router.post('/unsave', authenticateToken, async (req, res) => {
     }
 });
 
+// Check if a recipe is saved by user
 router.get('/isSaved', authenticateToken, async (req, res) => {
     const userId = req.query.userid;
     const recipeId = req.query.recipeid;
@@ -90,6 +90,7 @@ router.get('/isSaved', authenticateToken, async (req, res) => {
     }
 });
 
+// Get all saved recipes
 router.get('/saved', authenticateToken, async (req, res) => {
     const userId = req.query.userid;
     const docRef = db.collection('user').doc(userId);
@@ -98,7 +99,7 @@ router.get('/saved', authenticateToken, async (req, res) => {
             if (doc.exists) {
                 const userData = doc.data();
                 const savedRecipes = userData.recipes || [];
-                
+
                 // Iterate through the savedRecipes array and get the recipe data for each recipe ID
                 const recipeIDs = savedRecipes.map((recipePath) => {
                     return (recipePath.split('/').pop());
@@ -129,14 +130,14 @@ router.get('/saved', authenticateToken, async (req, res) => {
                             recipeData.images = newResponse.data.recipe.images;
                             recipeData.image = newResponse.data.recipe.image;
                         }
-                        recipes.push({...recipeData, id: recipeDoc.id});
+                        recipes.push({ ...recipeData, id: recipeDoc.id });
                     } else {
                         recipes.push(null);
                     }
                 }
                 res.status(200).json({ recipes: recipes.filter(recipe => recipe !== null) });
             } else {
-                res.status(200).send({ recipes: []});
+                res.status(200).send({ recipes: [] });
             }
         });
     } catch (error) {
@@ -145,6 +146,7 @@ router.get('/saved', authenticateToken, async (req, res) => {
     }
 });
 
+// Get all user-created recipes
 router.get('/created', authenticateToken, async (req, res) => {
     const user = req.query.user;
     const docRef = db.collection('recipe');
@@ -154,7 +156,7 @@ router.get('/created', authenticateToken, async (req, res) => {
             snapshot.forEach((doc) => {
                 const recipeData = doc.data();
                 if (recipeData.source === user) {
-                    recipes.push({...recipeData, id: doc.id});
+                    recipes.push({ ...recipeData, id: doc.id });
                 }
             });
             res.status(200).json({ recipes });
