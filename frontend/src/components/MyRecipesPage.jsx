@@ -70,8 +70,8 @@ const MyRecipesPage = () => {
     <Box p={10}>
       <Tabs>
         <TabList>
-          <Tab _selected={{color: "#ff8e3c"}}>Saved Recipes</Tab>
-          <Tab _selected={{color: "#ff8e3c"}}>My Recipes</Tab>
+          <Tab _selected={{ color: "#ff8e3c" }}>Saved Recipes</Tab>
+          <Tab _selected={{ color: "#ff8e3c" }}>My Recipes</Tab>
         </TabList>
 
         <TabPanels>
@@ -108,11 +108,23 @@ const MyRecipesPage = () => {
                 columns={{ base: 1, sm: 2, md: 3, lg: 4 }}
                 spacing={5}
               >
-                {myRecipes.map((recipe, idx) => (
-                  <Link key={idx} href={`/recipe/${recipe.id}`}>
-                    <RecipePreview data={recipe} forMyRecipes={true} />
-                  </Link>
-                ))}
+                {myRecipes.map((recipe, idx) => {
+                  if (recipe.isApproved === true) {
+                    return (
+                      <Link key={idx} href={`/recipe/${recipe.id}`}>
+                        <RecipePreview data={recipe} forMyRecipes={true} />
+                      </Link>
+                    );
+                  }
+                  else {
+                    recipe.label = "Pending Approval"
+                    return (
+                      <Link key={idx}>
+                        <RecipePreview data={recipe} forMyRecipes={true} />
+                      </Link>
+                    )
+                  }
+                })}
               </SimpleGrid>
             ) : (
               <Heading textAlign="center" size="lg">

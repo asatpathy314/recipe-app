@@ -21,7 +21,7 @@ router.get('/', authenticateToken, (req, res) => {
 
     if (userMade === 'User-generated') {
         const user = req.query.user;
-        db.collection('recipe').where('isUserGenerated', '==', true).get() // TODO: filter results by params
+        db.collection('recipe').where('isUserGenerated', '==', true).where('isApproved', '==', true).get() // TODO: filter results by params
             .then((snapshot) => {
                 const recipes = [];
                 snapshot.forEach((doc) => {

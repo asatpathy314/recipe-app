@@ -1,6 +1,7 @@
 // middleware/authenticateToken.js
 const { auth }= require('../firebaseAdmin');
 
+// Authenticate firebase token
 const authenticateToken = async (req, res, next) => {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {

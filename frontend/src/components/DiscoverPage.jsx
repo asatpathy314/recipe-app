@@ -65,6 +65,7 @@ const DiscoverPage = () => {
           }
         );
         setRecipes(response.data);
+        console.log(response.data)
         setIsSearch(true);
       } catch (error) {
         console.error(error);
@@ -77,6 +78,7 @@ const DiscoverPage = () => {
   if (isLoggedIn === "false") {
     return <ErrorPage code={403} message="Forbidden" />;
   }
+
 
   return (
     <>
@@ -128,7 +130,7 @@ const DiscoverPage = () => {
             </Button>
           </form>
         </div>
-        {recipes && (
+        {recipes && recipes.length > 0 && (
           <div colSpan={{ base: 5, md: 4 }} className="recipes">
             <SimpleGrid columns={{ base: 1, sm: 2, md: 3, lg: 4 }} spacing={5}>
               {recipes.map((recipe, idx) => {
@@ -144,6 +146,13 @@ const DiscoverPage = () => {
             </SimpleGrid>
           </div>
         )}
+        {
+            recipes && recipes.length === 0 && (
+                <Heading textAlign="center" size="lg">
+                    No recipes found. Try again with different search criteria!
+                </Heading>
+            )
+        }
       </Box>
     </>
   );
