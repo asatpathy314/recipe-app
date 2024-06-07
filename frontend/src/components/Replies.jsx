@@ -8,11 +8,11 @@ import {
   Text,
 } from "@chakra-ui/react";
 import ReplyCard from "./ReplyCard"; // Adjust the import path as necessary
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import CommentForm from "./CommentForm"; // Adjust the import path as necessary
 
-const Replies = ({ replies }) => {
+const Replies = ({ replies, setAverageRating, findAvg }) => {
   const [localReplies, setLocalReplies] = useState(replies);
   const { id } = useParams();
 
@@ -20,20 +20,11 @@ const Replies = ({ replies }) => {
     setLocalReplies([...localReplies, newComment]);
   };
   const deleteComment = (commentID) => {
-    // let newComments = [];
-    // for (let reply in localReplies){
-    //     if (reply.id === commentID){
-    //         if (reply.replies){
-    //             newComments.push({...reply, text: "[This comment was deleted by the user.]"})
-    //         }
-    //     } else {
-    //         newComments.push(reply)
-    //     }
-    // }
-    // setLocalReplies(newComments);
     setLocalReplies(localReplies.filter((reply) => reply.id !== commentID));
   };
-
+  useEffect(()=>{
+    setAverageRating(findAvg(localReplies))
+  },[localReplies])
   const addReply = (commentId, newReply) => {
     setLocalReplies((prevComments) =>
       prevComments.map((comment) =>

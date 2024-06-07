@@ -309,7 +309,7 @@ const RecipeDetailPage = ({ match }) => {
           </SimpleGrid>
         )}
         <Chatbot />
-        <Replies replies={recipe.comments} />
+        <Replies replies={recipe.comments} setAverageRating={setAverageRating} findAvg={findAvg}/>
       </Container>
     );
   } else if (isLoading) {
