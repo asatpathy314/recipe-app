@@ -11,7 +11,6 @@ import ReplyCard from "./ReplyCard"; // Adjust the import path as necessary
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import CommentForm from "./CommentForm"; // Adjust the import path as necessary
-import "../styles/comments.css";
 
 const Replies = ({ replies }) => {
   const [localReplies, setLocalReplies] = useState(replies);
@@ -88,6 +87,7 @@ const Replies = ({ replies }) => {
                 addReply={(newReply) => addReply(reply.id, newReply)}
                 deleteReply={deleteReply}
                 deleteComment={deleteComment}
+                rating={reply.rating}
               />
               {reply.replies.map((subReply, subIndex) => (
                 <ReplyCard
