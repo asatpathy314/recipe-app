@@ -57,6 +57,10 @@ const MyRecipesPage = () => {
     return <ErrorPage code={403} message="Unauthorized" />;
   }
 
+  else if (!savedRecipes || !myRecipes) {
+    return <ErrorPage message="Loading..." />;
+  }
+
   return (
     <Box p={10}>
       <Tabs>

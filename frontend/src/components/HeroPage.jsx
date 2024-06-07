@@ -9,9 +9,9 @@ export default function CallToActionWithVideo() {
 
   const handleButtonClick = () => {
     if (isLoggedIn) {
-      navigate("/discover", { replace: true });
+      navigate("/discover");
     } else {
-      navigate("/register", { replace: true });
+      navigate("/register");
     }
   };
 

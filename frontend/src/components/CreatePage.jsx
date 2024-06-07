@@ -208,7 +208,7 @@ const CreateRecipe = () => {
               Congrats, you submitted a recipe! Pending admin review to be officially uploaded.
             </ModalBody>
             <ModalFooter>
-              <Button colorScheme="blue" mr={3} onClick={() => {navigate('/', { replace: true })}}>
+              <Button colorScheme="blue" mr={3} onClick={() => {navigate('/')}}>
                 Close
               </Button>
             </ModalFooter>

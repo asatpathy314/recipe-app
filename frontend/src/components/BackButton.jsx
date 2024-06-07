@@ -9,7 +9,7 @@ const BackButton = ({ icon, ...rest }) => {
       position="absolute"
       top="1rem"
       left="1rem"
-      onClick={() => navigate(-1, { replace: true })}
+      onClick={() => navigate(-1)}
       icon={icon}
       {...rest}
     />

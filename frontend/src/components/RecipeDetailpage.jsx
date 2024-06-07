@@ -130,7 +130,26 @@ const RecipeDetailPage = ({ match }) => {
           },
         }
       );
-      navigate("/admin", { replace: true });
+      navigate("/admin");
+      navigate(0)
+    } catch (error) {
+      console.error("Error deleting recipe");
+      console.error(error);
+    }
+  };
+  
+  const handleMyDelete = async () => {
+    try {
+      await axios.post(
+        `http://localhost:8000/admin/delete?id=${id}`, {},
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      navigate("/my-recipes");
+      navigate(0);
     } catch (error) {
       console.error("Error deleting recipe");
       console.error(error);
@@ -147,7 +166,8 @@ const RecipeDetailPage = ({ match }) => {
           },
         }
       );
-      navigate("/admin", { replace: true });
+      navigate('/admin');
+      navigate(0);
     } catch (error) {
       console.error("Error approving recipe");
       console.error(error);
@@ -189,7 +209,7 @@ const RecipeDetailPage = ({ match }) => {
             <IconButton
               icon={<DeleteIcon />}
               aria-label="Delete"
-              onClick={handleDelete}
+              onClick={handleMyDelete}
             />
           )}
           </Stack>
