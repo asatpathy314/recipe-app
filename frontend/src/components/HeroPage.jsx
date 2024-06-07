@@ -13,6 +13,7 @@ import {
   createIcon,
   Icon,
 } from "@chakra-ui/react";
+import Carousel from "./Carousel";
 
 export default function CallToActionWithVideo() {
   const { isLoggedIn } = useContext(AuthContext);
@@ -116,14 +117,7 @@ export default function CallToActionWithVideo() {
             width={"full"}
             overflow={"hidden"}
           >
-            <Image
-              alt={"Hero Image"}
-              fit={"cover"}
-              align={"center"}
-              w={"100%"}
-              h={"100%"}
-              src={"/Hero1.jpg"}
-            />
+            <Carousel />
           </Box>
         </Flex>
       </Stack>
