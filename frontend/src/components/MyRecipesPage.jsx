@@ -18,7 +18,7 @@ import ErrorPage from "./ErrorPage";
 const MyRecipesPage = () => {
   const { accessToken, userID, isLoggedIn, email } = useContext(AuthContext);
   const [savedRecipes, setSavedRecipes] = useState(null);
-  const [myRecipes, setMyRecipes] = useState(null);
+  const [myRecipes, setMyRecipes] = useState(null)
 
   useEffect(() => {
     const fetchSavedRecipes = async () => {

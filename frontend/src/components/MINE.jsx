@@ -63,7 +63,7 @@ const RecipeDetailPage = ({ match }) => {
         setIsApproved(response.data.isApproved);
         setIsCreatedByUser(response.data.source === email.split("@")[0]);
         response.data.comments.length && setAverageRating(findAvg(response.data.comments));
-        response.data.comments.length && setNumComments(response.data.comments.length);
+        response.data.comments.length && setNumComments(response.data.comments.length)
       } catch (error) {
         console.error("Error fetching recipe");
         console.error(error);
@@ -323,7 +323,7 @@ const RecipeDetailPage = ({ match }) => {
             </Stack>
           </SimpleGrid>
         )}
-        <Chatbot ingredients={recipe.ingredients} />
+        <Chatbot />
         <Replies replies={recipe.comments} setAverageRating={setAverageRating} findAvg={findAvg} setNumComments={setNumComments}/>
       </Container>
     );
