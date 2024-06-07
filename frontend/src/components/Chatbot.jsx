@@ -1,4 +1,5 @@
-import { useState } from "react";
+
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Input,
@@ -10,10 +11,11 @@ import {
 } from "@chakra-ui/react";
 import axios from "axios";
 
-const Chatbot = () => {
+const Chatbot = ( {ingredients} ) => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [recipeIngredients, setRecipeIngredients] = useState(ingredients);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -25,12 +27,13 @@ const Chatbot = () => {
     setMessages(updatedMessages);
     setInput("");
     setLoading(true);
-
+    const ingredientsString = recipeIngredients.map((ingredient) => ingredient.text).toString();
     try {
       const response = await axios.post(
         "http://localhost:8000/gpt",
         {
           messages: updatedMessages,
+          ingredients: ingredientsString,
         },
         {
           headers: {
@@ -60,7 +63,15 @@ const Chatbot = () => {
     >
       <VStack spacing={4} as="form" onSubmit={handleSubmit}></VStack>
       <Box mt={4} maxH="300px" overflowY="scroll">
-        {messages.map((msg, index) => (
+        {messages.map((msg, index) => {
+          console.log(msg.content)
+          const content = msg.content.split('\n').map((text, index) => (
+            <React.Fragment key={index}>
+              {text}
+              <br />
+            </React.Fragment>
+          ));
+          return (
           <HStack key={index} align="start" spacing={4} mt={2}>
             <Avatar name={msg.role === "user" ? "You" : "Assistant"} />
             <Box
@@ -69,10 +80,10 @@ const Chatbot = () => {
               borderRadius="md"
               maxW="80%"
             >
-              <Text>{msg.content}</Text>
+              <Text>{content}</Text>
             </Box>
           </HStack>
-        ))}
+        )})}
       </Box>
       <VStack spacing={4} mt={5} as="form" onSubmit={handleSubmit}>
         <Input

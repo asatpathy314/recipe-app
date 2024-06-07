@@ -321,7 +321,7 @@ const RecipeDetailPage = ({ match }) => {
             </Stack>
           </SimpleGrid>
         )}
-        <Chatbot />
+        <Chatbot ingredients={recipe.ingredients} />
         <Replies replies={recipe.comments} setAverageRating={setAverageRating} findAvg={findAvg}/>
       </Container>
     );
