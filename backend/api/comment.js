@@ -28,7 +28,7 @@ router.get('/', authenticateToken, async (req, res) => {
 
 router.post('/', authenticateToken, async (req, res) => {
     const id = req.query.id
-    const { text, user } = req.body;
+    const { text, user, rating } = req.body;
     if (!text || !user || !id)  {
         return res.status(400).json({ message: 'Invalid request' });
     }
@@ -38,12 +38,23 @@ router.post('/', authenticateToken, async (req, res) => {
 
     try { 
         // Update the recipe with the new comment
-        await ref.set({
-            text,
-            user,
-            createdAt: admin.firestore.FieldValue.serverTimestamp() // Use Firebase server timestamp
-        });
-        res.status(201).json({ id: ref.id });
+        if (rating){
+            await ref.set({
+                text,
+                user,
+                rating:rating,
+                createdAt: admin.firestore.FieldValue.serverTimestamp() // Use Firebase server timestamp
+            });
+            res.status(201).json({ id: ref.id });
+        } else {
+            await ref.set({
+                text,
+                user,
+                rating:1,
+                createdAt: admin.firestore.FieldValue.serverTimestamp() // Use Firebase server timestamp
+            });
+            res.status(201).json({ id: ref.id });
+        }
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Internal Server Error' });

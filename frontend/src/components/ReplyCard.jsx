@@ -14,6 +14,7 @@ import { FaReply, FaTrash } from "react-icons/fa";
 import ReplyForm from "./ReplyForm.jsx";
 import { AuthContext } from "./AuthProvider";
 import axios from "axios";
+import Ratings from './Ratings'
 
 const ReplyCard = ({
   isComment,
@@ -26,6 +27,7 @@ const ReplyCard = ({
   addReply,
   deleteReply,
   deleteComment,
+  rating,
   ...rest
 }) => {
   const [showReplyForm, setShowReplyForm] = useState(false);
@@ -89,6 +91,7 @@ const ReplyCard = ({
       </CardHeader>
       <CardBody pt={2} pb={0}>
         <Stack>
+          <Ratings submittedRating={rating}/>
           <Text>{content}</Text>
           {showReplyForm && isComment && (
             <Box mt={0} ml={4}>

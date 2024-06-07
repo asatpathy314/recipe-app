@@ -9,11 +9,13 @@ import {
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { AuthContext } from "./AuthProvider";
+import Ratings from './Ratings'
 
 const CommentForm = ({ addComment }) => {
   const { id } = useParams();
   const { accessToken, email } = useContext(AuthContext);
   const [text, setText] = useState("");
+  const [rating, setRating] = useState(0);
 
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
@@ -22,11 +24,13 @@ const CommentForm = ({ addComment }) => {
       text,
       createdAt: new Date().toISOString(),
       replies: [],
+      rating:rating,
     };
     const dbComment = {
       user: email.split("@")[0],
       text,
       createdAt: new Date().toISOString(),
+      rating:rating,
     };
 
     try {
@@ -42,7 +46,8 @@ const CommentForm = ({ addComment }) => {
 
       console.log(response.data.message);
       addComment(newComment);
-      setText("");
+      setText('');
+      setRating(0)
     } catch (error) {
       console.error("Error adding comment");
       console.error(error);
@@ -51,6 +56,10 @@ const CommentForm = ({ addComment }) => {
 
   return (
     <Box as="form" mt={4} onSubmit={handleCommentSubmit}>
+      <FormControl isRequired mt={4}>
+          <FormLabel>Add a rating</FormLabel>
+          <Ratings rating={rating} setRating={setRating}/>
+      </FormControl>
       <FormControl isRequired mt={4}>
         <FormLabel>Add a comment</FormLabel>
         <Textarea

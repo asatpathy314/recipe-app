@@ -24,6 +24,8 @@ import { AuthContext } from "./AuthProvider";
 import Chatbot from "./Chatbot";
 import Replies from "./Replies";
 import ErrorPage from "./ErrorPage";
+import AverageRating from "./AverageRating";
+
 
 const RecipeDetailPage = ({ match }) => {
   const { accessToken, userID, isLoggedIn, email } = useContext(AuthContext);
@@ -34,6 +36,15 @@ const RecipeDetailPage = ({ match }) => {
   const [isApproved, setIsApproved] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isCreatedByUser, setIsCreatedByUser] = useState(false);
+  const [averageRating, setAverageRating] = useState(0);
+  const findAvg = (comments) => {
+    let sum = 0;
+      for(let i = 0; i < comments.length; i++) {
+        sum += comments[i].rating;
+      }
+      const avg = sum / comments.length;
+      return Math.round(avg * 100) / 100
+  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -49,6 +60,7 @@ const RecipeDetailPage = ({ match }) => {
         setRecipe(response.data);
         setIsApproved(response.data.isApproved);
         setIsCreatedByUser(response.data.source === email.split("@")[0]);
+        setAverageRating(findAvg(response.data.comments));
       } catch (error) {
         console.error("Error fetching recipe");
         console.error(error);
@@ -174,7 +186,7 @@ const RecipeDetailPage = ({ match }) => {
     }
   };
 
-  if (!isLoggedIn || (!isApproved && email !== "admin@savorytastes.org")) {
+  if (!isLoading && (!isLoggedIn || (!isApproved && email !== "admin@savorytastes.org"))) {
     return <ErrorPage code={403} message="Forbidden" />;
   }
 
@@ -243,6 +255,7 @@ const RecipeDetailPage = ({ match }) => {
                 <Text fontWeight={300} fontSize={"2xl"}>
                   {Math.round(recipe.calories) + " calories"}
                 </Text>
+                <AverageRating avg={averageRating} numComments={recipe.comments.length}/>
               </Box>
 
               <Stack
